@@ -7,6 +7,6 @@ public class EmailValidator implements ConstraintValidator<CustomAnnotations.Ema
 
     @Override
     public boolean isValid(String s, ConstraintValidatorContext constraintValidatorContext) {
-        return false;
+        return true;
     }
 }

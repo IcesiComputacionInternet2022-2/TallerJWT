@@ -19,12 +19,15 @@
 
 package com.icesi.edu.users.security;
 
+import com.icesi.edu.users.error.exception.UserDemoError;
+import com.icesi.edu.users.error.exception.UserDemoException;
 import com.icesi.edu.users.utils.JWTParser;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpStatus;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -39,6 +42,8 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.UUID;
 
+import static com.icesi.edu.users.constants.UserErrorCode.CODE_401;
+
 @Component
 @Order(1)
 public class JWTAuthorizationTokenFilter extends OncePerRequestFilter {
@@ -48,7 +53,7 @@ public class JWTAuthorizationTokenFilter extends OncePerRequestFilter {
 
     private static final String USER_ID_CLAIM_NAME = "userId";
 
-    private static final String[] excludedPaths = {"POST /users", "POST /login"};
+    private static final String[] excludedPaths = {"POST /login"};
 
 
     @Override
@@ -65,7 +70,7 @@ public class JWTAuthorizationTokenFilter extends OncePerRequestFilter {
                 SecurityContextHolder.setUserContext(context);
                 filterChain.doFilter(request, response);
             } else {
-                throw new InvalidParameterException();
+                throw new UserDemoException(HttpStatus.UNAUTHORIZED, new UserDemoError(CODE_401.toString(), CODE_401.getMessage()));
             }
         } catch (JwtException e) {
             System.out.println("Error verifying JWT token: " + e.getMessage());
