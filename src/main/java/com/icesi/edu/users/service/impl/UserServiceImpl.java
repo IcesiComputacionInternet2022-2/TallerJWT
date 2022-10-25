@@ -6,6 +6,7 @@ import com.icesi.edu.users.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -20,16 +21,40 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getUser(UUID userId) {
-        return userRepository.findById(userId).orElse(null);
+        User user = userRepository.findById(userId).orElse(null);
+        if(user != null){
+           user.setLastTimeSearched(LocalDate.now());
+           System.out.println("Fecha: " + user.getLastTimeSearched());
+        }
+        return user;
     }
 
     @Override
     public User createUser(User userDTO) {
-        return userRepository.save(userDTO);
+        if(!repitedPhoneOrEmail(userDTO.getEmail(),userDTO.getPhoneNumber()))
+            return userRepository.save(userDTO);
+        throw new RuntimeException("RepitedPhoneOrEmail");
     }
 
     @Override
     public List<User> getUsers() {
         return StreamSupport.stream(userRepository.findAll().spliterator(),false).collect(Collectors.toList());
     }
+
+    public boolean repitedPhoneOrEmail(String email, String number){
+        List<User> allUsers = getUsers();
+        boolean duplicatedData = false;
+
+        for(User user : allUsers){
+            if (user.getEmail() != null && email != null && email.equals(user.getEmail()) ||
+                    user.getPhoneNumber() != null && number != null && number.equals(user.getPhoneNumber())) {
+                duplicatedData = true;
+                break;
+            }
+        }
+
+        return duplicatedData;
+    }
+
+
 }

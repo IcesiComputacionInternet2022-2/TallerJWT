@@ -4,7 +4,7 @@
 
     <!-- Refer to https://docs.liquibase.com/change-types/community/create-table.html -->
 
-    <changeSet id="33d4e9bc-7210-47c3-9617-c56ab7c0750d" author="juan.prada" failOnError="true">
+    <changeSet id="33d4e9bc-7210-47c3-9617-c56ab7c0750d" author="Kennet_Sanchez" failOnError="true">
 
         <createTable tableName="user">
             <column name="id" type="UUID">
@@ -14,6 +14,7 @@
             <column name="phone_number" type="varchar(255)" />
             <column name="first_name" type="varchar(255)" />
             <column name="last_name" type="varchar(255)" />
+            <column name="unhashed_password" type="varchar(255)" />
         </createTable>
     </changeSet>
 </databaseChangeLog>
