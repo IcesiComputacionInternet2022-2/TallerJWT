@@ -59,7 +59,7 @@ public class UserControllerTest {
     private boolean createGeneratesException(){
         when(userMapper.fromUser(any())).thenReturn(userDTO);
         try {
-            userController.createUser(userDTO);
+            userController.createUser(createuserDTO);
         }
         catch (Exception e){
             return true;
