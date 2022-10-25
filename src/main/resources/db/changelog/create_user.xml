@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <!-- Refer to https://docs.liquibase.com/change-types/community/create-table.html -->
+
+    <changeSet id="33d4e9bc-7210-47c3-9617-c56ab7c0750d" author="juan.prada" failOnError="true">
+
+        <createTable tableName="user">
+            <column name="id" type="UUID">
+                <constraints nullable="false" primaryKey="true" />
+            </column>
+            <column name="email" type="varchar(255)" />
+            <column name="phone_number" type="varchar(255)" />
+            <column name="first_name" type="varchar(255)" />
+            <column name="last_name" type="varchar(255)" />
+        </createTable>
+    </changeSet>
+</databaseChangeLog>
