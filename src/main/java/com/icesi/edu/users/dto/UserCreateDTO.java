@@ -1,21 +1,20 @@
 package com.icesi.edu.users.dto;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.icesi.edu.users.validation.CustomAnnotations.NameValidation;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserDTO {
+public class UserCreateDTO {
 
     private UUID id;
 
@@ -33,6 +32,7 @@ public class UserDTO {
     @Size(min = 1, max = 120)
     private String lastName;
 
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private LocalDate localDate;
+    @NotNull
+    private String password;
+
 }

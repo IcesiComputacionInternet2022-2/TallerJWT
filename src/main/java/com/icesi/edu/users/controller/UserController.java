@@ -1,6 +1,7 @@
 package com.icesi.edu.users.controller;
 
 import com.icesi.edu.users.api.UserAPI;
+import com.icesi.edu.users.dto.UserCreateDTO;
 import com.icesi.edu.users.dto.UserDTO;
 import com.icesi.edu.users.mapper.UserMapper;
 import com.icesi.edu.users.service.UserService;
@@ -8,6 +9,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
+import javax.validation.Valid;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -29,17 +31,21 @@ public class UserController implements UserAPI {
         return userDTO;
     }
 
-    @Override
     public UserDTO createUser(UserDTO userDTO) {
-        if(validateEmailOrPhoneNumberNotNull(userDTO) && validateFirstName(userDTO) &&
-                validateLastName(userDTO)){
-            if(validateUserPhoneNumber(userDTO) && validateUserEmail(userDTO))
+        if (validateEmailOrPhoneNumberNotNull(userDTO) && validateFirstName(userDTO) &&
+                validateLastName(userDTO)) {
+            if (validateUserPhoneNumber(userDTO) && validateUserEmail(userDTO))
                 return userMapper.fromUser(userService.createUser(userMapper.fromDTO(userDTO)));
             else
                 throw new RuntimeException();
-        }else {
+        } else {
             throw new RuntimeException();
         }
+    }
+
+    @Override
+    public UserDTO createUser(@Valid UserCreateDTO userDTO) {
+        return userMapper.fromUser(userService.createUser(userMapper.fromDTO(userDTO)));
     }
 
     @Override
