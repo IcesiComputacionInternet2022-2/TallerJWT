@@ -6,8 +6,7 @@ import com.icesi.edu.users.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -26,24 +25,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User createUser(User userDTO) {
-        if(!isRepeated(userDTO.getEmail(),userDTO.getPhoneNumber())){
-            return userRepository.save(userDTO);
-        }
-        throw new RuntimeException("Repeated email or phoneNumber");
+        return userRepository.save(userDTO);
     }
 
     @Override
     public List<User> getUsers() {
         return StreamSupport.stream(userRepository.findAll().spliterator(),false).collect(Collectors.toList());
-    }
-
-    private boolean isRepeated(String email,String number){
-        List<User> users = getUsers();
-        for (User x : users){
-            if (x.getPhoneNumber().equals(number) || x.getEmail().equals(email)){
-                return true;
-            }
-        }
-        return false;
     }
 }
