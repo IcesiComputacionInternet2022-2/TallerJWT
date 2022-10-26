@@ -33,6 +33,8 @@ public class User {
 
     private String lastName;
 
+    private String password;
+
     @PrePersist
     public void generateId(){
         this.id = UUID.randomUUID();
