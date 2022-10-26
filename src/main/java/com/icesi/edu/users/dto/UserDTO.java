@@ -1,10 +1,10 @@
 package com.icesi.edu.users.dto;
 
+import com.icesi.edu.users.validation.CustomAnnotations;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.Pattern;
 import java.time.LocalDate;
 import java.util.UUID;
 
@@ -25,6 +25,6 @@ public class UserDTO {
 
     private LocalDate lastTimeSearched;
 
-    @Pattern(regexp = "(?=.*[a-z])(?=.*[A-Z])(?=.*[\\d])(?=.*[\\W])(?!.*[\\s])")
+    @CustomAnnotations.PasswordValidation
     private String unhashedPassword;
 }

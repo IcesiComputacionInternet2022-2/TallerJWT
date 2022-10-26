@@ -31,7 +31,7 @@ public class UserController implements UserAPI {
         String phone = userDTO.getPhoneNumber();
         String firstName = userDTO.getFirstName();
         String lastName = userDTO.getLastName();
-        String unhashedPassword = userDTO.getUnhashedPassword();
+        System.out.println(userDTO.getUnhashedPassword());
 
         if(!(validateDomain(email) && !hasSpecialCharacters(email) && colombianNumber(phone) && !numberContainsWhiteSpaces(phone) && validSizeNumber(phone)
         && hasAtLeastOneContactWay(email, phone) && namesSizeValidation(firstName, lastName) && !hasSpecialCharactersOnNames(firstName, lastName))){

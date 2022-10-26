@@ -1,5 +1,6 @@
 package com.icesi.edu.users.model;
 
+import com.icesi.edu.users.validation.CustomAnnotations;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -37,6 +38,7 @@ public class User {
 
     private LocalDate lastTimeSearched;
 
+    @CustomAnnotations.PasswordValidation
     private String unhashedPassword;
 
     @PrePersist
