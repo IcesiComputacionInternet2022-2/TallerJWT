@@ -1,6 +1,5 @@
 package com.icesi.edu.users.model;
 
-import com.icesi.edu.users.validation.CustomAnnotations;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,7 +11,6 @@ import javax.persistence.Id;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.UUID;
 
 
@@ -38,7 +36,6 @@ public class User {
 
     private LocalDate lastTimeSearched;
 
-    @CustomAnnotations.PasswordValidation
     private String unhashedPassword;
 
     @PrePersist

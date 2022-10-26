@@ -11,7 +11,7 @@ public interface CustomAnnotations {
     @Target({ElementType.METHOD, ElementType.FIELD})
     @Retention(RetentionPolicy.RUNTIME)
     @interface PasswordValidation{
-        String msg () default "The password doesn't fulfill the minimum character diversity";
+        String message () default "The password doesn't fulfill the minimum character diversity";
 
         Class<?>[] groups() default {};
 

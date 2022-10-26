@@ -7,6 +7,7 @@ import com.icesi.edu.users.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.UUID;
 import java.util.regex.Matcher;
@@ -26,7 +27,7 @@ public class UserController implements UserAPI {
     }
 
     @Override
-    public UserDTO createUser(UserDTO userDTO) {
+    public UserDTO createUser( @Valid UserDTO userDTO) {
         String email = userDTO.getEmail();
         String phone = userDTO.getPhoneNumber();
         String firstName = userDTO.getFirstName();

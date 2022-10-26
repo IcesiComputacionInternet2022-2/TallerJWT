@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.UUID;
 
@@ -17,7 +18,7 @@ public interface UserAPI {
     public UserDTO getUser(@PathVariable UUID userId);
 
     @PostMapping()
-    public UserDTO createUser(@RequestBody UserDTO userDTO);
+    public UserDTO createUser(@RequestBody @Valid UserDTO userDTO);
 
     @GetMapping
     public List<UserDTO> getUsers();
