@@ -1,5 +1,9 @@
 package com.icesi.edu.users.validation;
 
+import com.icesi.edu.users.error.GlobalExceptionHandler;
+import com.icesi.edu.users.error.exception.UserException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+
 import javax.validation.Constraint;
 import javax.validation.Payload;
 import java.lang.annotation.*;

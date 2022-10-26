@@ -7,7 +7,8 @@ import lombok.Getter;
 @Getter
 public enum UserErrorCode {
 
-    CODE_01("Hello world");
+    CODE_01("Hello world"),
+    CODE_02("The password doesn't fulfill the character diversity");
 
     private final String message;
 }
