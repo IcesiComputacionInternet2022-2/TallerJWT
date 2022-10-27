@@ -10,12 +10,11 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
-import java.util.Date;
 import java.util.UUID;
 
 
 @Data
-@Table(name = "`user`")
+@Table(name = "`animal`")
 @Entity
 @Builder
 @NoArgsConstructor
@@ -24,7 +23,6 @@ public class User {
 
     @Id
     @Type(type="org.hibernate.type.UUIDCharType")
-
     private UUID id;
 
     private String email;
@@ -35,11 +33,14 @@ public class User {
 
     private String lastName;
 
+    private String password;
+
 
     @PrePersist
     public void generateId(){
         this.id = UUID.randomUUID();
     }
+
 
 
 }
