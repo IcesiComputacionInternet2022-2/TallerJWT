@@ -4,7 +4,7 @@
 
     <!-- Refer to https://docs.liquibase.com/change-types/community/create-table.html -->
 
-    <changeSet id="33d4e9bc-7210-47c3-9617-c56ab7c0750d" author="juan.prada" failOnError="true">
+    <changeSet id="33d4e9bc-7210-47c3-9617-c56ab7c0750d" author="DevPachon" failOnError="true">
 
         <createTable tableName="user">
             <column name="id" type="UUID">
@@ -14,6 +14,15 @@
             <column name="phone_number" type="varchar(255)" />
             <column name="first_name" type="varchar(255)" />
             <column name="last_name" type="varchar(255)" />
+            <column name="password" type="varchar(255)" />
         </createTable>
+        <insert tableName="user">
+            <column name="id" value="bb817d83-37ab-4f65-a89a-20a1e5f62152"/>
+            <column name="email" value="acacbbv@icesi.edu.co"/>
+            <column name="phone_number" value="+573177507401"/>
+            <column name="first_name" value="Luisa"/>
+            <column name="last_name" value="Tapiero"/>
+            <column name="password" value="1wW$56"/>
+        </insert>
     </changeSet>
 </databaseChangeLog>

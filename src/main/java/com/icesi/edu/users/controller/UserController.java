@@ -1,14 +1,13 @@
 package com.icesi.edu.users.controller;
 
 import com.icesi.edu.users.api.UserAPI;
+import com.icesi.edu.users.dto.ResponseDTO;
 import com.icesi.edu.users.dto.UserDTO;
 import com.icesi.edu.users.mapper.UserMapper;
-import com.icesi.edu.users.model.User;
 import com.icesi.edu.users.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -22,60 +21,84 @@ public class UserController implements UserAPI {
     public final UserMapper userMapper;
 
     @Override
-    public UserDTO getUser(UUID userId) {
-        UserDTO user = userMapper.fromUser(userService.getUser(userId));
-        user.setDate(LocalDate.now().toString());
-        return user;
+    public ResponseDTO getUser(UUID userId) {
+        return userMapper.toResponse(userService.getUser(userId));
     }
 
     @Override
     public UserDTO createUser(UserDTO userDTO) {
-        if (validUser(userDTO.getEmail(),userDTO.getPhoneNumber(),userDTO.getFirstName(),userDTO.getLastName())){
-            UserDTO usr =  userMapper.fromUser(userService.createUser(userMapper.fromDTO(userDTO)));
-            return usr;
-        }
 
-        throw new RuntimeException("Not a valid user");
-    }
+        validateMandatoryField(
+                userMapper.fromDTO(userDTO).getEmail(),
+                userMapper.fromDTO(userDTO).getPhoneNumber()
+        );
+        validateFirstNameOrLastName(userMapper.fromDTO(userDTO).getFirstName(), "firstName");
+        validateFirstNameOrLastName(userMapper.fromDTO(userDTO).getLastName(), "lastName");
 
-    public boolean validUser(String email,String phoneNumber,String name,String lastName){
-        switch (validateNotNullEmailOrNumber(email,phoneNumber)){
-            case 0: //Both are not null
-                return validateEmail(email) && validateNumber(phoneNumber) && validateNameAndLastname(name,lastName);
-            case 1: //Email: not null and number: null
-                return validateEmail(email) && validateNameAndLastname(name,lastName);
-            case 2: //Email: null and number: not null
-                return validateNumber(phoneNumber) && validateNameAndLastname(name,lastName);
-            default: //both null
-                return false;
-        }
+        return userMapper.fromUser(userService.createUser(userMapper.fromDTO(userDTO)));
     }
 
     @Override
     public List<UserDTO> getUsers() {
         return userService.getUsers().stream().map(userMapper::fromUser).collect(Collectors.toList());
     }
-    private boolean validateEmail(String email){
-        return email.matches("\\w+@icesi.edu.co$"); //Domain and no special characters
-    }
-    private boolean validateNumber(String phoneNumber){
-        return phoneNumber.matches("^(\\+57)[0-9]{10}"); //+57 and 10 numbers
-    }
-    private boolean validateNameAndLastname(String name,String lastname){
-        return name.matches("[aA-zZ ]{0,120}") && lastname.matches("[aA-zZ ]{0,120}"); //More than 0 lesser than 120
+
+    private void validateEmail(String email) {
+        //Validate special characters and format
+        String regex = "[A-Za-z\\d]+@[A-Za-z\\d]+\\.[A-Za-z]+(.[A-Za-z]+)?";
+        if (!email.matches(regex)) {
+            throw new RuntimeException("The email is invalid");
+        }
+
+        String[] emailSplinted = email.split("@");
+        //Validate Domain
+        String validDomain = "@icesi.edu.co";
+        String domain = "@" + emailSplinted[1];
+        if (!domain.equals(validDomain)) {
+            throw new RuntimeException("The domain is wrong");
+        }
     }
 
-    private int validateNotNullEmailOrNumber(String email,String number){
-       if(email != null){
-           if(number != null)
-               return 0; //Both are not null
-           else
-               return 1; //Email: not null and number: null
-       }
-       if(number!=null)
-           return 2; //Email: null and number: not null
-       else
-           return 3; //both null
+    private void validatePhone(String phone) {
+        String regex = "^\\+57[\\s\\S]*";
+        //Validate Prefix
+        if (!phone.matches(regex)) {
+            throw new RuntimeException("The phone number must have the colombian prefix");
+        }
 
+        //Validate spaces and format
+
+        regex = "\\+57\\d{10}";
+
+        if (!phone.matches(regex)) {
+            throw new RuntimeException("The phone number is not valid");
+        }
+    }
+
+    private void validateMandatoryField(String email, String phoneNumber) {
+        if (email == null && phoneNumber == null) {
+            throw new RuntimeException("Either email or phone number must be present");
+        }
+
+        if (email != null) {
+            validateEmail(email);
+        }
+
+        if (phoneNumber != null) {
+            validatePhone(phoneNumber);
+        }
+    }
+
+    private void validateFirstNameOrLastName(String anyName, String option) {
+        //Validate max length
+        if (anyName!=null&&anyName.length() > 120) {
+            throw new RuntimeException("The " + option + " should not have more than 120 characters");
+        }
+
+        //Validate format
+        String regex = "[A-Za-z\\s]*";
+        if (anyName!=null&&!anyName.matches(regex)) {
+            throw new RuntimeException("The " + option + " should not have special characters or numbers");
+        }
     }
 }

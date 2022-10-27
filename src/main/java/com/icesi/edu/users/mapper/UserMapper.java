@@ -1,5 +1,6 @@
 package com.icesi.edu.users.mapper;
 
+import com.icesi.edu.users.dto.ResponseDTO;
 import com.icesi.edu.users.dto.UserDTO;
 import com.icesi.edu.users.model.User;
 import org.mapstruct.Mapper;
@@ -8,5 +9,8 @@ import org.mapstruct.Mapper;
 public interface UserMapper {
 
      User fromDTO(UserDTO userDTO);
+
      UserDTO fromUser(User user);
+
+     ResponseDTO toResponse(User user);
 }

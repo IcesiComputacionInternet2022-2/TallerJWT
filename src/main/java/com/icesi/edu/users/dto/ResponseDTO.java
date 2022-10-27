@@ -1,20 +1,15 @@
 package com.icesi.edu.users.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 public class ResponseDTO {
+
     private UUID id;
 
     private String email;
-
-    private String password;
 
     private String phoneNumber;
 
@@ -22,5 +17,9 @@ public class ResponseDTO {
 
     private String lastName;
 
-    private String date;
+    private String timeStamp;
+
+    public ResponseDTO() {
+        timeStamp = java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+    }
 }

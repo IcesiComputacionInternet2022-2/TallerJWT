@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
 @Data
@@ -16,13 +16,12 @@ public class UserDTO {
 
     private String email;
 
-    private String password;
-
     private String phoneNumber;
 
     private String firstName;
 
     private String lastName;
 
-    private String date;
+    @NotNull
+    private String password;
 }

@@ -6,8 +6,6 @@ import com.icesi.edu.users.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -26,24 +24,32 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User createUser(User userDTO) {
-        if(!isRepeated(userDTO.getEmail(),userDTO.getPhoneNumber())){
-            return userRepository.save(userDTO);
-        }
-        throw new RuntimeException("Repeated email or phoneNumber");
+        validateRepeatedEmailOrPhoneNumber(userDTO.getEmail(), userDTO.getPhoneNumber());
+        return userRepository.save(userDTO);
     }
 
     @Override
     public List<User> getUsers() {
-        return StreamSupport.stream(userRepository.findAll().spliterator(),false).collect(Collectors.toList());
+        List<User> listUsers = StreamSupport.stream(userRepository.findAll().spliterator(),false).collect(Collectors.toList());
+        return listUsers.stream().peek(user ->{
+            String ID = user.getId().toString();
+            String newID = ID.substring(ID.length()-4);
+            user.setId(UUID.fromString("00000000-0000-0000-0000-00000000"+newID));
+        }).collect(Collectors.toList());
     }
 
-    private boolean isRepeated(String email,String number){
-        List<User> users = getUsers();
-        for (User x : users){
-            if (x.getPhoneNumber().equals(number) || x.getEmail().equals(email)){
-                return true;
+
+    private void validateRepeatedEmailOrPhoneNumber(String email, String phoneNumber) {
+
+        List<User> listUsers = StreamSupport.stream(userRepository.findAll().spliterator(),false).collect(Collectors.toList());
+
+        listUsers.forEach(user-> {
+            if(user.getEmail()!=null&&user.getEmail().equals(email)){
+                throw new RuntimeException("The email is already in use");
             }
-        }
-        return false;
+            if(user.getPhoneNumber()!=null&&user.getPhoneNumber().equals(phoneNumber)){
+                throw new RuntimeException("The phone number is already in use");
+            }
+        });
     }
 }

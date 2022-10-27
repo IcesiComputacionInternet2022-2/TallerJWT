@@ -46,6 +46,7 @@ public class JWTAuthorizationTokenFilter extends OncePerRequestFilter {
                 SecurityContextHolder.setUserContext(context);
                 filterChain.doFilter(request, response);
             } else {
+                //throw new UnauthorizedException();
                 throw new InvalidParameterException();
             }
         } catch (JwtException e) {
