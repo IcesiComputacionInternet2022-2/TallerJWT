@@ -21,7 +21,7 @@ public class PasswordValidator implements ConstraintValidator<CustomAnnotations.
     public boolean isValid(String str, ConstraintValidatorContext constraintValidatorContext) {
         boolean valid =  Pattern.compile("(?=.*[a-z])(?=.*[A-Z])(?=.*[\\d])(?=.*[\\W])(?!.*[\\s])").matcher(str).find();
         if(!valid){
-            throw new UserException(HttpStatus.INTERNAL_SERVER_ERROR, new UserError(UserErrorCode.CODE_02, UserErrorCode.CODE_02.getMessage()));
+            throw new UserException(HttpStatus.INTERNAL_SERVER_ERROR, new UserError(UserErrorCode.CODE_01, UserErrorCode.CODE_01.getMessage()));
         }
         return valid;
     }
