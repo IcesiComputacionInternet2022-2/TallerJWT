@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 
 @AllArgsConstructor
 @Getter
-public class UserDemoException extends RuntimeException{
+public class UserDemoException extends SecurityException{
     private HttpStatus httpStatus;
     private UserDemoError error;
 }

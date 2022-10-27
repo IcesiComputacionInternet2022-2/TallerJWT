@@ -25,6 +25,7 @@ import com.icesi.edu.users.utils.JWTParser;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.MalformedJwtException;
+import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
@@ -57,6 +58,7 @@ public class JWTAuthorizationTokenFilter extends OncePerRequestFilter {
 
 
     @Override
+    @SneakyThrows
     protected void doFilterInternal(
             @NonNull HttpServletRequest request,
             @NonNull HttpServletResponse response,
@@ -70,6 +72,7 @@ public class JWTAuthorizationTokenFilter extends OncePerRequestFilter {
                 SecurityContextHolder.setUserContext(context);
                 filterChain.doFilter(request, response);
             } else {
+                //throw new InvalidParameterException();
                 throw new UserDemoException(HttpStatus.UNAUTHORIZED, new UserDemoError(CODE_401.toString(), CODE_401.getMessage()));
             }
         } catch (JwtException e) {

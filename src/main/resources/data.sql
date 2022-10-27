@@ -1,0 +1,1 @@
+INSERT INTO "user" (id,email,phone_number,first_name,last_name,password) VALUES ('34366239-3264-3430-2d34-6662642d3131','juandavid227@icesi.edu.co','+573166670887','Juan','Cruz','Abc123@')

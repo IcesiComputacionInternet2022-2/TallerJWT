@@ -7,7 +7,8 @@ import lombok.Getter;
 @Getter
 public enum UserErrorCode {
 
-    CODE_401("Debe estar authenticado para realizar este request");
+    CODE_401("Debe estar authenticado para realizar este request"),
+    CODE_001("La contraseña debe tener al menos una letra mayuscula, una minuscula, un numero y un simbolo como #$%@");
 
     private String message;
 

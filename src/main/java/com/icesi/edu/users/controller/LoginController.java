@@ -7,6 +7,8 @@ import com.icesi.edu.users.service.LoginService;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
 @AllArgsConstructor
 @RestController
 public class LoginController implements LoginAPI {
@@ -15,7 +17,7 @@ public class LoginController implements LoginAPI {
     private final LoginService loginService;
 
     @Override
-    public TokenDTO login(LoginDTO loginDTO) {
+    public TokenDTO login(@Valid LoginDTO loginDTO) {
         return loginService.login(loginDTO);
     }
 }
