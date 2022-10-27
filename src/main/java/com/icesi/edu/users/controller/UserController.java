@@ -48,7 +48,7 @@ public class UserController implements UserAPI {
     }
 
     public boolean validateDomain(String email){
-        return email.toUpperCase().matches("^.*(@ICESI\\.EDU\\.CO)$");
+        return email.toUpperCase().matches(".*(@ICESI\\.EDU\\.CO)$|.*(@icesi\\.edu\\.co)$");
     }
 
     public boolean hasSpecialCharacters(String email){

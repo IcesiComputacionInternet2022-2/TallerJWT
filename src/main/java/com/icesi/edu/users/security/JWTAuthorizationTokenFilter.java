@@ -1,5 +1,8 @@
 package com.icesi.edu.users.security;
 
+import com.icesi.edu.users.constant.UserErrorCode;
+import com.icesi.edu.users.error.exception.UserError;
+import com.icesi.edu.users.error.exception.UserException;
 import com.icesi.edu.users.utils.JWTParser;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
@@ -7,6 +10,7 @@ import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.MalformedJwtException;
 import liquibase.repackaged.org.apache.commons.lang3.StringUtils;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -29,15 +33,14 @@ public class JWTAuthorizationTokenFilter extends OncePerRequestFilter {
     private static final String AUTHORIZATION_HEADER = "Authentication";
     private static final String TOKEN_PREFIX = "Bearer";
     private static final String USER_ID_CLAIM_NAME = "userId";
-    private static final String[] EXCLUDE_PATHS = {"POST/users"};
+    private static final String[] EXCLUDE_PATHS = {"POST /users"};
 
 
 
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    public void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
             try {
-
                 if(containsToken(request)){
                     String jwtToken = request.getHeader(AUTHORIZATION_HEADER.replace(TOKEN_PREFIX, StringUtils.EMPTY));
                     Claims claims = JWTParser.decodeJWT(jwtToken);
@@ -45,9 +48,8 @@ public class JWTAuthorizationTokenFilter extends OncePerRequestFilter {
                     SecurityContextHolder.setUserContext(context);
                     filterChain.doFilter(request, response);
                 }else{
-                    throw new InvalidParameterException();
+                    throw new UserException(HttpStatus.UNAUTHORIZED, new UserError(UserErrorCode.CODE_401, UserErrorCode.CODE_401.getMessage()));
                 }
-
             } catch ( JwtException e){
                 System.out.println("Error verifying jwt token: " + e.getMessage());
             } finally {

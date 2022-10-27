@@ -16,6 +16,7 @@ public class UserDTO {
 
     private UUID id;
 
+    @CustomAnnotations.EmailValidation
     private String email;
 
     private String phoneNumber;
