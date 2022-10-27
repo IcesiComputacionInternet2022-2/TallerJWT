@@ -28,7 +28,7 @@ public class UserRepositoryTest {
         userRepository.save(User.builder().email("asds").phoneNumber("asdsd").firstName("John").lastName("Doe").build());
         List<User> users = (List<User>) userRepository.findAll();
 
-        assertThat(users.size()).isEqualTo(1);
+        assertThat(users.size()).isEqualTo(2);
     }
 
 }
