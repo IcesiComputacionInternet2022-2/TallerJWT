@@ -11,6 +11,3 @@
 
 ### Bonus: Realizar una anotación propia para validar el password + 0.5 para cualquier nota de computación.
 ### Bounus 2: Utilizar unicamente streams y opcionales para procesar los datos + 0.5 para cualquier nota de computación.
-
-
-# Fecha maxima de subida del taller: Jueves 27 de octubre del 2022 GMT -5.
