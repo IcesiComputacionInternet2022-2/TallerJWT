@@ -1,5 +1,6 @@
 package com.icesi.edu.users.model;
 
+import com.icesi.edu.users.validation.PasswordConstraint;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -33,6 +34,7 @@ public class User {
 
     private String lastName;
 
+    @PasswordConstraint
     private String password;
 
     @PrePersist

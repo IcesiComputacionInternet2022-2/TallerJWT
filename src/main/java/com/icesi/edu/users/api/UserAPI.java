@@ -1,12 +1,9 @@
 package com.icesi.edu.users.api;
 
-import com.icesi.edu.users.dto.UserCreateDTO;
+import com.icesi.edu.users.dto.TokenDTO;
 import com.icesi.edu.users.dto.UserDTO;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import com.icesi.edu.users.dto.UserWithPasswordDTO;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
@@ -15,12 +12,12 @@ import java.util.UUID;
 public interface UserAPI {
 
     @GetMapping("/{userId}")
-    UserDTO getUser(@PathVariable UUID userId);
+    UserWithPasswordDTO getUser(@PathVariable UUID userId, @RequestHeader TokenDTO authorization); //Validar que el id sea el del propio usuario
 
     @PostMapping()
-    UserDTO createUser(@RequestBody UserCreateDTO userCreateDTO);
+    UserWithPasswordDTO createUser(@RequestBody UserWithPasswordDTO userWithPasswordDTO);
 
-    @GetMapping
+    @GetMapping//Hacer que retorne
     List<UserDTO> getUsers();
 
 }

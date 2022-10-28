@@ -1,5 +1,6 @@
 package com.icesi.edu.users.dto;
 
+import com.icesi.edu.users.validation.PasswordConstraint;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -8,7 +9,7 @@ import java.util.UUID;
 
 @Data
 @AllArgsConstructor
-public class UserCreateDTO {
+public class UserWithPasswordDTO {
 
     private UUID id;
 
@@ -24,7 +25,7 @@ public class UserCreateDTO {
 
     private String password;
 
-    public UserCreateDTO(){
+    public UserWithPasswordDTO(){
         dateTime = LocalDateTime.now();
     }
 }

@@ -1,7 +1,7 @@
 package com.icesi.edu.users.mapper;
 
-import com.icesi.edu.users.dto.UserCreateDTO;
 import com.icesi.edu.users.dto.UserDTO;
+import com.icesi.edu.users.dto.UserWithPasswordDTO;
 import com.icesi.edu.users.model.User;
 import org.mapstruct.Mapper;
 
@@ -10,7 +10,8 @@ public interface UserMapper {
 
      User fromDTO(UserDTO userDTO);
 
-     User fromDTO(UserCreateDTO userCreateDTO);
+     User fromDTO(UserWithPasswordDTO userCreateDTO);
 
      UserDTO fromUser(User user);
+     UserWithPasswordDTO fromUserWithPassword(User user);
 }
