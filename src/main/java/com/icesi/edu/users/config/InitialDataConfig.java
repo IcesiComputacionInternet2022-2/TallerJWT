@@ -1,4 +1,4 @@
-package com.edu.icesi.restzooregisters.integration.config;
+package com.icesi.edu.users.config;
 
 import liquibase.integration.spring.SpringLiquibase;
 import org.springframework.beans.factory.annotation.Autowired;
