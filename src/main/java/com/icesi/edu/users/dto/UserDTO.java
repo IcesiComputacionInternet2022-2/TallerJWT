@@ -1,5 +1,6 @@
 package com.icesi.edu.users.dto;
 
+import com.icesi.edu.users.validation.CustomAnnotations.PasswordValidation;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -23,5 +24,6 @@ public class UserDTO {
     private String lastName;
 
     @NotNull
+    @PasswordValidation
     private String password;
 }

@@ -16,10 +16,4 @@ public class ResponseDTO {
     private String firstName;
 
     private String lastName;
-
-    private String timeStamp;
-
-    public ResponseDTO() {
-        timeStamp = java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-    }
 }
