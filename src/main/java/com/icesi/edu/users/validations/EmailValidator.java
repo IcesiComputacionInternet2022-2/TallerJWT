@@ -11,7 +11,12 @@ public class EmailValidator implements ConstraintValidator<CustomAnnotations.Val
     }
 
     @Override
-    public boolean isValid(String s, ConstraintValidatorContext constraintValidatorContext) {
-        return false;
+    public boolean isValid(String email, ConstraintValidatorContext constraintValidatorContext) {
+        if (email == null) return false;
+        String domain = "^.*(@icesi.edu.co)$";
+        int atCount = email.length() - email.replaceAll("@", "").length();
+        int dotCount = email.length() - email.replaceAll("\\.", "").length();
+        String pattern = "[^a-zA-z0-9\\-_]";
+        return email.toLowerCase().matches(domain) && !email.matches(pattern) && atCount == 1 && dotCount == 2;
     }
 }

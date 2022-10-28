@@ -7,6 +7,7 @@ import lombok.Getter;
 @Getter
 public enum ErrorConstants {
 
+    ERR_Nx00("You're a teapot (this is a test error code)."),
     ERR_0x01("The given email has an invalid format. Try again."),
     ERR_0x02("The given phone number has an invalid format. Try again."),
     ERR_0x03_1("The given name has an invalid format. Try again."),

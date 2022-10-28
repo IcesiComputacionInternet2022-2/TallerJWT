@@ -10,7 +10,8 @@ public class PasswordValidator implements ConstraintValidator<CustomAnnotations.
     }
 
     @Override
-    public boolean isValid(String s, ConstraintValidatorContext constraintValidatorContext) {
-        return false;
+    public boolean isValid(String password, ConstraintValidatorContext constraintValidatorContext) {
+        String re = "(?=.*[a-z])(?=.*[A-Z])(?=.*[\\d])(?=.*[\\W])(?!.*[\\s])";
+        return password.matches(re);
     }
 }

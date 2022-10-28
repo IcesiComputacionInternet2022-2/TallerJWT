@@ -10,7 +10,8 @@ public class TelephoneValidator implements ConstraintValidator<CustomAnnotations
     }
 
     @Override
-    public boolean isValid(String s, ConstraintValidatorContext constraintValidatorContext) {
-        return false;
+    public boolean isValid(String phone, ConstraintValidatorContext constraintValidatorContext) {
+        if (phone == null) return false;
+        return phone.substring(0, 3).equals("+57") && phone.length() == 13 && !phone.matches("[^0-9+]");
     }
 }

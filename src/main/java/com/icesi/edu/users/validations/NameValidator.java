@@ -10,7 +10,10 @@ public class NameValidator implements ConstraintValidator<CustomAnnotations.Vali
     }
 
     @Override
-    public boolean isValid(String s, ConstraintValidatorContext constraintValidatorContext) {
-        return false;
+    public boolean isValid(String name, ConstraintValidatorContext constraintValidatorContext) {
+        int nameLen = name.length();
+        int CAP = 120;
+        String pattern = "[a-zA-Z]+";
+        return nameLen <= CAP && name.matches(pattern);
     }
 }
