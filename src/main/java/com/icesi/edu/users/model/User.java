@@ -14,7 +14,7 @@ import java.util.UUID;
 
 
 @Data
-@Table(name = "`animal`")
+@Table(name = "`user`")
 @Entity
 @Builder
 @NoArgsConstructor

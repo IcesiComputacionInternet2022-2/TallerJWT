@@ -21,13 +21,20 @@
 
 package com.icesi.edu.users.security;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.icesi.edu.users.error.UserErrorCode;
+import com.icesi.edu.users.error.exception.UserDemoError;
+import com.icesi.edu.users.error.exception.UserDemoException;
 import com.icesi.edu.users.utils.JWTParser;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.MalformedJwtException;
+import lombok.SneakyThrows;
 import lombok.extern.java.Log;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -42,6 +49,8 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.UUID;
 
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+
 @Component
 @Order(1)//Prioridad 1, es decir minima prioridad
 public class JWTAuthorizationTokenFilter extends OncePerRequestFilter {
@@ -49,9 +58,9 @@ public class JWTAuthorizationTokenFilter extends OncePerRequestFilter {
    private static final String AUTHORIZATION_HEADER = "Authorization";
    private static final String TOKEN_PREFIX = "Bearer ";
    private static final String USER_ID_CLAIM_NAME = "userId";
-   private static final String[] excludedPaths = {"POST /users", "POST /login"};
+   private static final String[] excludedPaths = {"POST /login"};
 
-
+/*
     @Override
     protected void doFilterInternal(
             @NonNull HttpServletRequest request,
@@ -70,6 +79,45 @@ public class JWTAuthorizationTokenFilter extends OncePerRequestFilter {
             }
         } catch (JwtException e) {
             System.out.println("Error verifying JWT token: " + e.getMessage());
+            //throw new UserDemoException(HttpStatus.UNAUTHORIZED, new UserDemoError(UserErrorCode.CODE_02,"Debes estar autenticado para realizar este request"));
+        } finally {
+            SecurityContextHolder.clearContext();
+        }
+    }*/
+
+    @SneakyThrows
+    private void createUnauthorizedFilter(UserDemoException userDemoException, HttpServletResponse response) {
+
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        UserDemoError userDemoError = userDemoException.getError();
+
+        String message = objectMapper.writeValueAsString(userDemoError);
+
+        response.setStatus(401);
+        response.setHeader(HttpHeaders.CONTENT_TYPE, APPLICATION_JSON_VALUE);
+        response.getWriter().write(message);
+        response.getWriter().flush();
+    }
+
+    @Override
+    protected void doFilterInternal(
+            @NonNull HttpServletRequest request,
+            @NonNull HttpServletResponse response,
+            @NonNull FilterChain filterChain)
+            throws ServletException, IOException {
+        try {
+            if (containsToken(request)) {
+                String jwtToken = request.getHeader(AUTHORIZATION_HEADER).replace(TOKEN_PREFIX, StringUtils.EMPTY);
+                Claims claims = JWTParser.decodeJWT(jwtToken);
+                SecurityContext context = parseClaims(jwtToken, claims);
+                SecurityContextHolder.setUserContext(context);
+                filterChain.doFilter(request, response);
+            } else {
+                createUnauthorizedFilter(new UserDemoException(HttpStatus.UNAUTHORIZED, new UserDemoError(UserErrorCode.CODE_02,"Debes estar autenticado para realizar este request")),response);
+            }
+        } catch (JwtException e) {
+            createUnauthorizedFilter(new UserDemoException(HttpStatus.UNAUTHORIZED, new UserDemoError(UserErrorCode.CODE_02,"Debes estar autenticado para realizar este request")), response);
         } finally {
             SecurityContextHolder.clearContext();
         }

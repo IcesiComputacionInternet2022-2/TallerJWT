@@ -11,5 +11,8 @@ public interface UserMapper {
      User fromDTO(UserDTO userDTO);
      UserDTO fromUser(User user);
 
-     UserCreateDTO fromUserDTO(User user);
+     User fromCreatedDTO(UserCreateDTO userCreateDTO);
+
+     UserCreateDTO fromUserCreate(User user);
+
 }

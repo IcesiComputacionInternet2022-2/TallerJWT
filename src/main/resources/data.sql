@@ -1,1 +1,4 @@
-INSERT INTO "user" (id, email, phone_number, first_name, last_name, password) VALUES ('d45bb1c6-354f-4052-9381-009679b8f289','gustavo-g_10@hotmail.com','+573215515680','Gustavo', 'Villada', '123456');
+INSERT INTO "user" (id, email, phone_number, first_name, last_name, password) VALUES ('d45bb1c6-354f-4052-9381-009679b8f289','gustavo@icesi.edu.co','+573215515680','Gustavo', 'Villada', 'Gustavo.1');
+INSERT INTO "user" (id, email, phone_number, first_name, last_name, password) VALUES ('c99d6dae-b0a2-4648-ad54-bf103621ed7a','wanda@icesi.edu.co','+573225286612','Wanda', 'Villacorte', 'Wanda.1');
+INSERT INTO "user" (id, email, phone_number, first_name, last_name, password) VALUES ('b17e9f5b-77f4-4bdf-bc78-21fecddc8526','terry@icesi.edu.co','+573156548912','Terry', 'Villacorte', 'Terry.1');
+INSERT INTO "user" (id, email, phone_number, first_name, last_name, password) VALUES ('393fe13d-eb98-4d4e-a43b-e562883c900e','oscar@icesi.edu.co','+573227864414','Oscar', 'Villada', 'Oscar.1');

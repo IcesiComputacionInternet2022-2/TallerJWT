@@ -4,6 +4,7 @@ import com.icesi.edu.users.error.exception.UserDemoError;
 import com.icesi.edu.users.error.exception.UserDemoException;
 import com.icesi.edu.users.model.User;
 import com.icesi.edu.users.repository.UserRepository;
+import com.icesi.edu.users.security.SecurityContextHolder;
 import com.icesi.edu.users.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -22,19 +23,26 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getUser(UUID userId) {
+        var userAuth= SecurityContextHolder.getContext().getUserId();
 
-        return userRepository.findById(userId).orElse(null);
+        if(userAuth!=null){
+            System.out.println(userAuth+" - "+userId);
+
+            if(userAuth.equals(userId)){
+                return userRepository.findById(userId).orElse(null);
+    }else{
+        throw new UserDemoException(HttpStatus.UNAUTHORIZED, new UserDemoError("1234","No estás autorizado para esta request 1"));
+    }
+}else{
+        throw new UserDemoException(HttpStatus.UNAUTHORIZED, new UserDemoError("1234","No estás autorizado para esta request 2"));
+        }
     }
 
-
-
     @Override
-    public User createUser(User userDTO) {
-
-        verifyEmailRepeat(userDTO.getEmail())  ;
-        verifyPhoneNumberRepeat(userDTO.getPhoneNumber());
-            return userRepository.save(userDTO);
-
+    public User createUser(User user) {
+        verifyEmailRepeat(user.getEmail())  ;
+        verifyPhoneNumberRepeat(user.getPhoneNumber());
+            return userRepository.save(user);
     }
 
     @Override

@@ -1,10 +1,12 @@
 package com.icesi.edu.users.controller;
 
 import com.icesi.edu.users.api.UserAPI;
+import com.icesi.edu.users.dto.UserCreateDTO;
 import com.icesi.edu.users.dto.UserDTO;
 import com.icesi.edu.users.error.exception.UserDemoError;
 import com.icesi.edu.users.error.exception.UserDemoException;
 import com.icesi.edu.users.mapper.UserMapper;
+import com.icesi.edu.users.security.SecurityContextHolder;
 import com.icesi.edu.users.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -28,16 +30,21 @@ public class UserController implements UserAPI {
     public final UserMapper userMapper;
 
     @Override
-    public UserDTO getUser(UUID animalId) {
+    public UserCreateDTO getUser(UUID userId) {
 
-        return userMapper.fromUser(userService.getUser(animalId));
+                return userMapper.fromUserCreate(userService.getUser(userId));
+
     }
 
     @Override
-    public UserDTO createUser(UserDTO userDTO) {
-
-            return userMapper.fromUser(userService.createUser(userMapper.fromDTO(userDTO)));
+    public UserCreateDTO createUser(UserCreateDTO userCreateDTO) {
+        verifyUserFirstName(userCreateDTO.getFirstName());
+        verifyUserLastName(userCreateDTO.getLastName());
+        verifyUserEmailAndPhoneNumber(userCreateDTO.getEmail(),userCreateDTO.getPhoneNumber());
+        return userMapper.fromUserCreate(userService.createUser(userMapper.fromCreatedDTO(userCreateDTO)));
     }
+
+
 
     @Override
     public List<UserDTO> getUsers() {

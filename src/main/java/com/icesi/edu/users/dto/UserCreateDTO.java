@@ -1,7 +1,6 @@
 package com.icesi.edu.users.dto;
 
 import com.icesi.edu.users.validation.CustomAnnotations;
-import com.icesi.edu.users.validation.CustomAnnotations.NameValidation;
 import com.sun.istack.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -25,8 +24,7 @@ public class UserCreateDTO {
     @com.sun.istack.NotNull
     private String phoneNumber;
 
-    @Size(min = 1, max = 120)
-    @CustomAnnotations.NameValidation
+    @Size(min = 5, max = 120)
     private String firstName;
 
     @NotNull

@@ -1,7 +1,14 @@
 package com.icesi.edu.users.validation;
 
+import com.icesi.edu.users.error.UserErrorCode;
+import com.icesi.edu.users.error.exception.UserDemoError;
+import com.icesi.edu.users.error.exception.UserDemoException;
+import lombok.SneakyThrows;
+import org.springframework.http.HttpStatus;
+
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class PasswordValidator implements ConstraintValidator<CustomAnnotations.PasswordValidation, String> {
@@ -11,7 +18,21 @@ public class PasswordValidator implements ConstraintValidator<CustomAnnotations.
     public void initialize(CustomAnnotations.PasswordValidation passwordValidation) {   }
 
     @Override
+    @SneakyThrows
     public boolean isValid(String str, ConstraintValidatorContext constraintValidatorContext) {
-        return str.matches("(?=.*[a-z])(?=.*[A-Z])(?=.*[\\d])(?=.*[\\W])(?!.*[\\s])");
+
+        String regex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[-+_!@#$%^&*., ?]).+$";
+        Pattern p = Pattern.compile(regex);
+        Matcher m = p.matcher(str);
+
+        boolean result = m.matches();
+
+        if(!result){
+            System.out.println("Mala contraseña");
+            throw new UserDemoException(HttpStatus.BAD_REQUEST, new UserDemoError(UserErrorCode.CODE_01,"The password is not strong"));
+        }
+        System.out.println("Buena contraseña");
+
+        return result;
     }
 }
