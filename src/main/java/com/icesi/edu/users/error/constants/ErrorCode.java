@@ -13,7 +13,7 @@ public enum ErrorCode {
     CODE_04("Email not found"),
     CODE_05("Incorrect password"),
     CODE_06("Access denied, you cannot see confidential information about other users"),
-    CODE_07("Authentication required for this request");
+    CODE_07("Missing or invalid token, authentication is required for this request");
 
 
     final String message;

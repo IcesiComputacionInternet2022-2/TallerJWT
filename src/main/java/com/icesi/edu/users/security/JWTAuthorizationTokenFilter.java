@@ -21,12 +21,19 @@
 
 package com.icesi.edu.users.security;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.icesi.edu.users.error.constants.ErrorCode;
+import com.icesi.edu.users.error.exception.UserDemoError;
+import com.icesi.edu.users.error.exception.UserDemoException;
 import com.icesi.edu.users.utils.JWTParser;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.MalformedJwtException;
+import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -40,6 +47,8 @@ import java.security.InvalidParameterException;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.UUID;
+
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @Component
 @Order(1)
@@ -67,10 +76,11 @@ public class JWTAuthorizationTokenFilter extends OncePerRequestFilter {
                 SecurityContextHolder.setUserContext(context);
                 filterChain.doFilter(request, response);
             } else {
-                throw new InvalidParameterException();
+                createUnauthorizedFilter(new UserDemoException(HttpStatus.UNAUTHORIZED, new UserDemoError(ErrorCode.CODE_07,ErrorCode.CODE_07.getMessage())),response);
             }
         } catch (JwtException e) {
-            System.out.println("Error verifying JWT token: " + e.getMessage());
+            createUnauthorizedFilter(new UserDemoException(HttpStatus.UNAUTHORIZED, new UserDemoError(ErrorCode.CODE_07,ErrorCode.CODE_07.getMessage())),response);
+
         } finally {
             SecurityContextHolder.clearContext();
         }
@@ -105,6 +115,20 @@ public class JWTAuthorizationTokenFilter extends OncePerRequestFilter {
         return authenticationHeader != null && authenticationHeader.startsWith(TOKEN_PREFIX);
     }
 
+    @SneakyThrows
+    private void createUnauthorizedFilter(UserDemoException userDemoException, HttpServletResponse response) {
+
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        UserDemoError userDemoError = userDemoException.getError();
+
+        String message = objectMapper.writeValueAsString(userDemoError);
+
+        response.setStatus(401);
+        response.setHeader(HttpHeaders.CONTENT_TYPE, APPLICATION_JSON_VALUE);
+        response.getWriter().write(message);
+        response.getWriter().flush();
+    }
 
 
 }
