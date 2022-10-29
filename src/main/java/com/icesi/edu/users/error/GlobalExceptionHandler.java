@@ -42,7 +42,7 @@ public class GlobalExceptionHandler {
     private UserErrorCode getErrorCode(String wrongField){
         switch (wrongField){
             case "password":
-                return UserErrorCode.CODE_401;
+                return UserErrorCode.CODE_001;
         }
         //I'm not going to implement the other validations... (cause they're not mandatory)
         return null;

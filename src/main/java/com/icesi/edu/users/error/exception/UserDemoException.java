@@ -8,7 +8,7 @@ import java.net.BindException;
 
 @AllArgsConstructor
 @Getter
-public class UserDemoException extends BindException {
+public class UserDemoException extends RuntimeException {
     private HttpStatus httpStatus;
     private UserDemoError error;
 }

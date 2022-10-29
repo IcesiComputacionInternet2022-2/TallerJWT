@@ -25,9 +25,7 @@ public class UserController implements UserAPI {
 
     @Override
     public UserDTO getUser(UUID userId) {
-        UserDTO user = userMapper.fromUser(userService.getUser(userId));
-        user.setDate(LocalDate.now().toString());
-        return user;
+        return userMapper.fromUser(userService.getUser(userId));
     }
 
     @Override

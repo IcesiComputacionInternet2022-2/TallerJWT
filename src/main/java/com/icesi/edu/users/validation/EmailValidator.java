@@ -7,6 +7,6 @@ public class EmailValidator implements ConstraintValidator<CustomAnnotations.Ema
 
     @Override
     public boolean isValid(String s, ConstraintValidatorContext constraintValidatorContext) {
-        return true;
+        return s.matches("\\w+@icesi.edu.co$");
     }
 }

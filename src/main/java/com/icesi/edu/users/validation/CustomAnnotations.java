@@ -37,7 +37,7 @@ public interface CustomAnnotations {
     }
 
     @Documented
-    @Constraint(validatedBy = EmailValidator.class)
+    @Constraint(validatedBy = PasswordValidator.class)
     @Target({ ElementType.METHOD, ElementType.FIELD })
     @Retention(RetentionPolicy.RUNTIME)
     @interface PasswordValidation {
