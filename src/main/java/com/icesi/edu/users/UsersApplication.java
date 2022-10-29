@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @SpringBootApplication
-@Import({com.edu.icesi.restzooregisters.integration.config.InitialDataConfig.class})
+@Import({com.icesi.edu.users.config.InitialDataConfig.class})
 @EnableJpaRepositories
 public class UsersApplication {
 

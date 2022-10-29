@@ -13,10 +13,6 @@ public class PasswordValidator implements ConstraintValidator<CustomAnnotations.
 
     @Override
     public boolean isValid(String s, ConstraintValidatorContext constraintValidatorContext) {
-        if(s.matches("(?=.*[a-z])(?=.*[A-Z])(?=.*[\\d])(?=.*[\\W])(?!.*[\\s])")){
-            return true;
-        }
-        //throw new UserDemoException(HttpStatus.INTERNAL_SERVER_ERROR,new UserDemoError(CODE_001.toString(), CODE_001.getMessage()));
-        return false;
+        return s.matches("(?=.*[a-z])(?=.*[A-Z])(?=.*[\\d])(?=.*[\\W])(?!.*[\\s])");
     }
 }
