@@ -16,5 +16,14 @@
             <column name="last_name" type="varchar(255)" />
             <column name="password" type="varchar(255)" />
         </createTable>
+
+        <insert tableName="user">
+            <column name="id" value="ea72c7a4-5605-11ed-bdc3-0242ac120002" />
+            <column name="email" value="Giovanni2414g@gmail.com" />
+            <column name="phone_number" value="3225034089" />
+            <column name="first_name" value="Giovanni" />
+            <column name="last_name" value="Mosquera" />
+            <column name="password" value="12345" />
+        </insert>
     </changeSet>
 </databaseChangeLog>

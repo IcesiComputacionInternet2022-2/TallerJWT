@@ -35,6 +35,21 @@ public interface CustomAnnotations {
         Class<? extends Payload>[] payload() default {};
 
     }
+
+    @Documented
+    @Constraint(validatedBy = PasswordValidator.class)
+    @Target({ ElementType.METHOD, ElementType.FIELD })
+    @Retention(RetentionPolicy.RUNTIME)
+    @interface PasswordValidation {
+
+
+        String message() default "Password is invalid";
+
+        Class<?>[] groups() default {};
+
+        Class<? extends Payload>[] payload() default {};
+
+    }
 }
 
 

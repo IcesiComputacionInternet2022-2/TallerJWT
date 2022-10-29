@@ -34,5 +34,4 @@ public class UserDTO {
     @Size(min = 1, max = 120)
     private String lastName;
 
-
 }
