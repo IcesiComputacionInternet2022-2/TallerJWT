@@ -19,10 +19,13 @@ public class UserDTO {
     @CustomAnnotations.EmailValidation
     private String email;
 
+    @CustomAnnotations.PhoneValidation
     private String phoneNumber;
 
+    @CustomAnnotations.NameValidation
     private String firstName;
 
+    @CustomAnnotations.NameValidation
     private String lastName;
 
     private LocalDate lastTimeSearched;

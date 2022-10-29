@@ -4,13 +4,14 @@ import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import java.util.regex.Pattern;
 
-public class EmailValidator implements ConstraintValidator<CustomAnnotations.EmailValidation, String> {
+public class PhoneValidator implements ConstraintValidator<CustomAnnotations.PhoneValidation, String> {
 
     @Override
-    public void initialize(CustomAnnotations.EmailValidation emailValidation) {    }
+    public void initialize(CustomAnnotations.PhoneValidation phoneValidation) {
+    }
 
     @Override
     public boolean isValid(String str, ConstraintValidatorContext constraintValidatorContext) {
-        return Pattern.compile(".*(@ICESI\\.EDU\\.CO)$|.*(@icesi\\.edu\\.co)$").matcher(str).find();
+        return Pattern.compile("^(\\+57)[\\d]{10}$").matcher(str).find();
     }
 }

@@ -1,9 +1,5 @@
 package com.icesi.edu.users.validation;
 
-import com.icesi.edu.users.error.GlobalExceptionHandler;
-import com.icesi.edu.users.error.exception.UserException;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-
 import javax.validation.Constraint;
 import javax.validation.Payload;
 import java.lang.annotation.*;
@@ -18,7 +14,6 @@ public interface CustomAnnotations {
         String message () default "The password doesn't fulfill the minimum character diversity";
 
         Class<?>[] groups() default {};
-
         Class<? extends Payload>[] payload() default {};
     }
 
@@ -28,6 +23,32 @@ public interface CustomAnnotations {
     @Retention(RetentionPolicy.RUNTIME)
     @interface EmailValidation{
         String message () default "The email doesn't fulfill the expected pattern";
+
+        Class<?>[] groups() default {};
+
+        Class<? extends Payload>[] payload() default {};
+    }
+
+    @Documented
+    @Constraint(validatedBy = NameValidator.class)
+    @Target({ElementType.METHOD, ElementType.FIELD})
+    @Retention(RetentionPolicy.RUNTIME)
+    @interface NameValidation{
+        String message () default "The name can't contain special characters.";
+
+        Class<?>[] groups() default {};
+
+        Class<? extends Payload>[] payload() default {};
+    }
+
+
+
+    @Documented
+    @Constraint(validatedBy = PhoneValidator.class)
+    @Target({ElementType.METHOD, ElementType.FIELD})
+    @Retention(RetentionPolicy.RUNTIME)
+    @interface PhoneValidation{
+        String message () default "The phone doesn't fulfill the expected pattern";
 
         Class<?>[] groups() default {};
 

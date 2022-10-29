@@ -4,13 +4,13 @@ import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 import java.util.regex.Pattern;
 
-public class EmailValidator implements ConstraintValidator<CustomAnnotations.EmailValidation, String> {
+public class NameValidator implements ConstraintValidator<CustomAnnotations.NameValidation, String> {
 
     @Override
-    public void initialize(CustomAnnotations.EmailValidation emailValidation) {    }
+    public void initialize(CustomAnnotations.NameValidation nameValidation) {    }
 
     @Override
     public boolean isValid(String str, ConstraintValidatorContext constraintValidatorContext) {
-        return Pattern.compile(".*(@ICESI\\.EDU\\.CO)$|.*(@icesi\\.edu\\.co)$").matcher(str).find();
+        return !Pattern.compile("[^a-zA-z ]").matcher(str).find();
     }
 }

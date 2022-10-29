@@ -49,7 +49,7 @@ public class GlobalExceptionHandler {
         Map<String, Object> errorInfo = new HashMap<>();
 
         UserErrorCode errorName = UserErrorCode.CODE_00;
-        String errorMsg = "";
+        String errorMsg = UserErrorCode.CODE_00.getMessage();
 
         switch (wrongField){
             case "unhashedPassword":
@@ -67,7 +67,7 @@ public class GlobalExceptionHandler {
                 errorMsg = UserErrorCode.CODE_03.getMessage();
                 break;
 
-            case "name":
+            case "firstName":
                 errorName = UserErrorCode.CODE_04;
                 errorMsg = UserErrorCode.CODE_04.getMessage();
                 break;
