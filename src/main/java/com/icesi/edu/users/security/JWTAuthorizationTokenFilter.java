@@ -1,11 +1,17 @@
 package com.icesi.edu.users.security;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.icesi.edu.users.error.exception.UserDemoError;
+import com.icesi.edu.users.error.exception.UserDemoException;
 import com.icesi.edu.users.utils.JWTParser;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -19,6 +25,8 @@ import java.security.InvalidParameterException;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.UUID;
+
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @Component
 @Order(1)
@@ -46,7 +54,7 @@ public class JWTAuthorizationTokenFilter extends OncePerRequestFilter {
                 SecurityContextHolder.setUserContext(context);
                 filterChain.doFilter(request, response);
             } else {
-                throw new InvalidParameterException();
+                unAuthorizedError(new UserDemoException(HttpStatus.UNAUTHORIZED, new UserDemoError("401","You must be authenticated to make this request.")), response);
             }
         } catch (JwtException e) {
             System.out.println("Error verifying JWT token: " + e.getMessage());
@@ -54,6 +62,23 @@ public class JWTAuthorizationTokenFilter extends OncePerRequestFilter {
             SecurityContextHolder.clearContext();
         }
     }
+
+    private void unAuthorizedError(UserDemoException userDemoException, HttpServletResponse httpServletResponse) {
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        UserDemoError userDemoError = userDemoException.getError();
+
+        try {
+            String errorMessage = objectMapper.writeValueAsString(userDemoError);
+            httpServletResponse.setStatus(401);
+            httpServletResponse.setHeader(HttpHeaders.CONTENT_TYPE, APPLICATION_JSON_VALUE);
+            httpServletResponse.getWriter().write(errorMessage);
+            httpServletResponse.getWriter().flush();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
     private SecurityContext parseClaims(String jwtToken, Claims claims) {
         String userId = claimKey(claims, USER_ID_CLAIM_NAME);
