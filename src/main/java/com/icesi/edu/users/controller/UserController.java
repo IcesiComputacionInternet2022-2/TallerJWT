@@ -7,12 +7,14 @@ import com.icesi.edu.users.error.exception.UserDemoError;
 import com.icesi.edu.users.error.exception.UserDemoException;
 import com.icesi.edu.users.mapper.UserMapper;
 import com.icesi.edu.users.model.User;
+import com.icesi.edu.users.security.SecurityContextHolder;
 import com.icesi.edu.users.service.UserService;
 import lombok.AllArgsConstructor;
 import org.passay.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
@@ -30,12 +32,18 @@ public class UserController implements UserAPI {
 
     @Override
     public UserDTO getUser(UUID userId) {
-        return userMapper.fromUser(userService.getUser(userId));
+        UUID authorizedID = SecurityContextHolder.getContext().getUserId();
+
+        if(authorizedID != null && authorizedID.equals(userId)){
+            return userMapper.fromUser(userService.getUser(userId));
+        }else{
+            throw new UserDemoException(HttpStatus.UNAUTHORIZED, new UserDemoError("401", "You are not authorized"));
+        }
     }
 
     @Override
-    public UserDTO createUser(UserCreateDTO userDTO) {
-        if (validateEmailPhoneNull(userDTO) && validateEmail(userDTO.getEmail()) && validatePhoneNumber(userDTO.getPhoneNumber()) && validateFirstName(userDTO.getFirstName()) && ValidateLastName(userDTO.getLastName()) && validatePassword(userDTO.getPassword())) {
+    public UserDTO createUser(@Valid UserCreateDTO userDTO) {
+        if (validateEmailPhoneNull(userDTO) && validateEmail(userDTO.getEmail()) && validatePhoneNumber(userDTO.getPhoneNumber()) && validateFirstName(userDTO.getFirstName()) && ValidateLastName(userDTO.getLastName())) {
             return userMapper.fromUser(userService.createUser(userMapper.fromDTO(userDTO)));
         } else {
             return null;
@@ -83,20 +91,6 @@ public class UserController implements UserAPI {
             return true;
         } else {
             throw new RuntimeException("Invalid Email");
-        }
-    }
-    private boolean validatePassword(String password) {
-        PasswordValidator passwordValidator = new PasswordValidator(
-                new CharacterRule(EnglishCharacterData.UpperCase, 1),
-                new CharacterRule(EnglishCharacterData.LowerCase, 1),
-                new CharacterRule(EnglishCharacterData.Digit, 1),
-                new CharacterRule(EnglishCharacterData.Special, 1)
-        );
-        RuleResult ruleResult = passwordValidator.validate(new PasswordData(password));
-        if(ruleResult.isValid()){
-            return true;
-        }else{
-            throw new UserDemoException(HttpStatus.NOT_ACCEPTABLE, new UserDemoError("406", "Invalid Password: Must have at least: 1 Uppercase, 1 Lowercase, 1 Number and a special symbol such as #$%@"));
         }
     }
 
