@@ -44,7 +44,7 @@ public class UserController implements UserAPI {
     @Override
     public UserDTO createUser(@Valid UserCreateDTO userDTO) {
         if (validateEmailPhoneNull(userDTO) && validateEmail(userDTO.getEmail()) && validatePhoneNumber(userDTO.getPhoneNumber()) && validateFirstName(userDTO.getFirstName()) && ValidateLastName(userDTO.getLastName())) {
-            return userMapper.fromUser(userService.createUser(userMapper.fromDTO(userDTO)));
+            return userMapper.fromUser(userService.createUser(userMapper.fromCreateDTO(userDTO)));
         } else {
             return null;
         }

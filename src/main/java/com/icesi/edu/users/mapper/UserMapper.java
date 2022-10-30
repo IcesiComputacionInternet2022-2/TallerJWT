@@ -14,7 +14,9 @@ public interface UserMapper {
 
      UserDTO fromUser(User user);
 
-     User fromDTO(UserCreateDTO userCreateDTO);
+     User fromCreateDTO(UserCreateDTO userCreateDTO);
+
+     UserCreateDTO fromUserToCreate(User user);
 
      default String fromUUID(UUID uuid) {
           return uuid.toString();

@@ -1,2 +1,2 @@
-INSERT INTO USER (id, email, phone_number, first_name, last_name, password) VALUES('d47b41da-579d-11ed-9b6a-0242ac120002', 'julilan@icesi.edu.co', '+573005954651', 'Julian', 'Rivera', 'Julian@1');
-INSERT INTO USER (id, email, phone_number, first_name, last_name, password) VALUES('3602d318-579f-11ed-9b6a-0242ac120002', 'Peter@icesi.edu.co', '+57987654321', 'Peter', 'Federico', 'Peter@1');
+INSERT INTO "user" (id, email, phone_number, first_name, last_name, password) VALUES('d47b41da-579d-11ed-9b6a-0242ac120002', 'julilan@icesi.edu.co', '+573005954651', 'Julian', 'Rivera', 'Julian@1');
+INSERT INTO "user" (id, email, phone_number, first_name, last_name, password) VALUES('3602d318-579f-11ed-9b6a-0242ac120002', 'Peter@icesi.edu.co', '+57987654321', 'Peter', 'Federico', 'Peter@1');
