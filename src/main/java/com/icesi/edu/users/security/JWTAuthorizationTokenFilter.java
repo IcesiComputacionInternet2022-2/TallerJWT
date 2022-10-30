@@ -80,7 +80,6 @@ public class JWTAuthorizationTokenFilter extends OncePerRequestFilter {
                 createUnauthorizedFilter(new LoginException(HttpStatus.UNAUTHORIZED, new LoginError(LoginErrorCode.CODE_01, LoginErrorCode.CODE_01.getMessage())), response);
             }
         } catch (JwtException e) {
-            e.printStackTrace();
             createUnauthorizedFilter(new LoginException(HttpStatus.UNAUTHORIZED, new LoginError(LoginErrorCode.CODE_01, LoginErrorCode.CODE_01.getMessage())), response);
         } finally {
             SecurityContextHolder.clearContext();

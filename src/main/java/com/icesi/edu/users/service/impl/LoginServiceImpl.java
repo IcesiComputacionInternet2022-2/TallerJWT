@@ -31,7 +31,6 @@ public class LoginServiceImpl implements LoginService {
         if(user.getPassword().equals(loginDTO.getPassword())) {
             Map<String, String> claims = new HashMap<>();
             claims.put("userId", user.getId().toString());
-            System.out.println(JWTParser.createJWT(user.getId().toString(),user.getFirstName(), user.getFirstName(), claims,100000L));
             return new TokenDTO(JWTParser.createJWT(user.getId().toString(),user.getFirstName(), user.getFirstName(), claims,100000L));
         }
         throw new LoginException(HttpStatus.UNAUTHORIZED, new LoginError(LoginErrorCode.CODE_01, LoginErrorCode.CODE_01.getMessage()));
