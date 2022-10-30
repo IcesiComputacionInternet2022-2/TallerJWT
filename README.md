@@ -13,4 +13,4 @@
 ### Bounus 2: Utilizar unicamente streams y opcionales para procesar los datos + 0.5 para cualquier nota de computación.
 
 
-# Fecha maxima de subida del taller: Domingo 30 de octubre del 2022 12:01 pm GMT -5.
+# Fecha maxima de subida del taller: Jueves 27 de octubre del 2022 GMT -5.
