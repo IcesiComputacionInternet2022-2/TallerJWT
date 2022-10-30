@@ -45,6 +45,7 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.UUID;
 
+import static com.icesi.edu.users.constants.UserErrorCode.CODE_002;
 import static com.icesi.edu.users.constants.UserErrorCode.CODE_401;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -72,7 +73,9 @@ public class JWTAuthorizationTokenFilter extends OncePerRequestFilter {
                 Claims claims = JWTParser.decodeJWT(jwtToken);
                 SecurityContext context = parseClaims(jwtToken, claims);
                 SecurityContextHolder.setUserContext(context);
-                filterChain.doFilter(request, response);
+                if(getUserFilter(request,response)){
+                    filterChain.doFilter(request, response);
+                }
             } else {
                 createUnauthorizedFilter(new UserDemoException(HttpStatus.UNAUTHORIZED, new UserDemoError(CODE_401.toString(), CODE_401.getMessage())),response);
             }
@@ -96,6 +99,18 @@ public class JWTAuthorizationTokenFilter extends OncePerRequestFilter {
         response.setHeader(HttpHeaders.CONTENT_TYPE, APPLICATION_JSON_VALUE);
         response.getWriter().write(message);
         response.getWriter().flush();
+    }
+
+    protected boolean getUserFilter(HttpServletRequest request, HttpServletResponse response) {
+        String method = request.getMethod();
+        String path = request.getRequestURI();
+        if (method.equals("GET") && path.startsWith("/users/")){
+            if(!path.endsWith(SecurityContextHolder.getContext().getUserId().toString())){
+                createUnauthorizedFilter(new UserDemoException(HttpStatus.UNAUTHORIZED, new UserDemoError(CODE_002.toString(), CODE_002.getMessage())),response);
+                return false;
+            }
+        }
+        return true;
     }
 
     private SecurityContext parseClaims(String jwtToken, Claims claims) {
