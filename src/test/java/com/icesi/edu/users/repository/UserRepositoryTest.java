@@ -1,6 +1,7 @@
 package com.icesi.edu.users.repository;
 
 
+
 import com.icesi.edu.users.model.User;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,7 +29,8 @@ public class UserRepositoryTest {
         userRepository.save(User.builder().email("asds").phoneNumber("asdsd").firstName("John").lastName("Doe").build());
         List<User> users = (List<User>) userRepository.findAll();
 
-        assertThat(users.size()).isEqualTo(1);
+        assertThat(users.size()).isEqualTo(2);
     }
 
 }
+

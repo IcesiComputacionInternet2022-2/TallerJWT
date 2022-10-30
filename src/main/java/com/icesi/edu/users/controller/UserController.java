@@ -1,81 +1,79 @@
 package com.icesi.edu.users.controller;
 
 import com.icesi.edu.users.api.UserAPI;
+import com.icesi.edu.users.dto.UserCreateDTO;
 import com.icesi.edu.users.dto.UserDTO;
+import com.icesi.edu.users.error.exception.UserDemoError;
+import com.icesi.edu.users.error.exception.UserDemoException;
 import com.icesi.edu.users.mapper.UserMapper;
-import com.icesi.edu.users.model.User;
 import com.icesi.edu.users.service.UserService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.time.LocalDate;
+import javax.validation.Valid;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
+import static com.icesi.edu.users.constants.UserErrorCode.CODE_001;
 
 @RestController
 @AllArgsConstructor
 public class UserController implements UserAPI {
 
-
     public final UserService userService;
     public final UserMapper userMapper;
 
     @Override
-    public UserDTO getUser(UUID userId) {
-        UserDTO user = userMapper.fromUser(userService.getUser(userId));
-        user.setDate(LocalDate.now().toString());
-        return user;
+    public UserCreateDTO getUser(UUID ID) {
+        return userMapper.CreateUser(userService.getUser(ID));
     }
 
     @Override
-    public UserDTO createUser(UserDTO userDTO) {
-        if (validUser(userDTO.getEmail(),userDTO.getPhoneNumber(),userDTO.getFirstName(),userDTO.getLastName())){
-            UserDTO usr =  userMapper.fromUser(userService.createUser(userMapper.fromDTO(userDTO)));
-            return usr;
+    public UserCreateDTO createUser(@Valid UserCreateDTO userDTO) {
+        if (validateUser(userDTO)){
+            return  userMapper.CreateUser(userService.createUser(userMapper.fromDTO(userDTO)));
         }
-
-        throw new RuntimeException("Not a valid user");
+        throw new UserDemoException(HttpStatus.BAD_REQUEST, new UserDemoError(CODE_001.toString(), CODE_001.getMessage()));
     }
 
-    public boolean validUser(String email,String phoneNumber,String name,String lastName){
-        switch (validateNotNullEmailOrNumber(email,phoneNumber)){
-            case 0: //Both are not null
-                return validateEmail(email) && validateNumber(phoneNumber) && validateNameAndLastname(name,lastName);
-            case 1: //Email: not null and number: null
-                return validateEmail(email) && validateNameAndLastname(name,lastName);
-            case 2: //Email: null and number: not null
-                return validateNumber(phoneNumber) && validateNameAndLastname(name,lastName);
-            default: //both null
+    public boolean validateUser(UserCreateDTO user){
+        if (user.getEmail()!=null){
+            if(user.getPhoneNumber()!=null){
+                return validateEmail(user.getEmail())
+                        &&validateNumber(user.getPhoneNumber())
+                        &&validateName(user.getFirstName()+""+user.getLastName());
+            }
+            return validateEmail(user.getEmail())
+                    &&validateName(user.getFirstName()+""+user.getLastName());
+
+        }
+        else{
+            if(user.getPhoneNumber()!=null){
+                return  validateNumber(user.getPhoneNumber())
+                        &&validateName(user.getFirstName()+""+user.getLastName());
+            }
+            else{
                 return false;
+            }
         }
     }
 
+    private boolean validateEmail(String email){
+        return email.matches("\\w+@icesi.edu.co$");
+    }
+    private boolean validateNumber(String phoneNumber){
+        return phoneNumber.matches("^(\\+57)[0-9]{10}");
+    }
+    private boolean validateName(String fullName){
+        return fullName.matches("[aA-zZ ]{0,240}") ;
+    }
     @Override
     public List<UserDTO> getUsers() {
         return userService.getUsers().stream().map(userMapper::fromUser).collect(Collectors.toList());
     }
-    private boolean validateEmail(String email){
-        return email.matches("\\w+@icesi.edu.co$"); //Domain and no special characters
-    }
-    private boolean validateNumber(String phoneNumber){
-        return phoneNumber.matches("^(\\+57)[0-9]{10}"); //+57 and 10 numbers
-    }
-    private boolean validateNameAndLastname(String name,String lastname){
-        return name.matches("[aA-zZ ]{0,120}") && lastname.matches("[aA-zZ ]{0,120}"); //More than 0 lesser than 120
-    }
 
-    private int validateNotNullEmailOrNumber(String email,String number){
-       if(email != null){
-           if(number != null)
-               return 0; //Both are not null
-           else
-               return 1; //Email: not null and number: null
-       }
-       if(number!=null)
-           return 2; //Email: null and number: not null
-       else
-           return 3; //both null
 
-    }
+
 }

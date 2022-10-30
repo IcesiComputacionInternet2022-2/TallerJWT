@@ -10,7 +10,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
-import java.util.Date;
 import java.util.UUID;
 
 
@@ -34,6 +33,8 @@ public class User {
     private String firstName;
 
     private String lastName;
+
+    private String password;
 
 
     @PrePersist

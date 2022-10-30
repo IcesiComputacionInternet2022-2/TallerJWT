@@ -6,12 +6,13 @@ import com.icesi.edu.users.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.util.Date;
+
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
+
+import static com.icesi.edu.users.constants.UserErrorCode.CODE_003;
 
 @AllArgsConstructor
 @Service
@@ -25,11 +26,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User createUser(User userDTO) {
-        if(!isRepeated(userDTO.getEmail(),userDTO.getPhoneNumber())){
-            return userRepository.save(userDTO);
+    public User createUser(User user) {
+        if(!verifyUser(user.getEmail(),user.getPhoneNumber())){
+            return userRepository.save(user);
         }
-        throw new RuntimeException("Repeated email or phoneNumber");
+        throw new RuntimeException(String.valueOf(CODE_003));
     }
 
     @Override
@@ -37,10 +38,10 @@ public class UserServiceImpl implements UserService {
         return StreamSupport.stream(userRepository.findAll().spliterator(),false).collect(Collectors.toList());
     }
 
-    private boolean isRepeated(String email,String number){
+    private boolean verifyUser(String email,String phoneNumber){
         List<User> users = getUsers();
         for (User x : users){
-            if (x.getPhoneNumber().equals(number) || x.getEmail().equals(email)){
+            if (x.getPhoneNumber().equals(phoneNumber) || x.getEmail().equals(email)){
                 return true;
             }
         }

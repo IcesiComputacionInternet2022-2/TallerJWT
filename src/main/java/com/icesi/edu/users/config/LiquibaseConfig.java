@@ -1,7 +1,6 @@
 package com.icesi.edu.users.config;
 
-import com.icesi.edu.users.mapper.UserMapper;
-import com.icesi.edu.users.mapper.UserMapperImpl;
+
 import liquibase.integration.spring.SpringLiquibase;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

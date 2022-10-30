@@ -48,15 +48,14 @@ public class UserDemoIntegrationTest {
 
     @Test
     @SneakyThrows
-    public void createUserSuccesfully(){
+    public void createUser(){
         String body = parseResourceToString("createUser.json");
         MvcResult result = mockMvc.perform(MockMvcRequestBuilders.post("/users")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(body)).andExpect(status().isOk())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(body)).andExpect(status().isOk())
                 .andReturn();
-
         UserDTO userResult = objectMapper.readValue(result.getResponse().getContentAsString(),UserDTO.class);
-        assertThat(userResult,hasProperty("firstName",is("Juan")));
+        assertThat(userResult,hasProperty("firstName",is("Pedro")));
     }
 
     @SneakyThrows
