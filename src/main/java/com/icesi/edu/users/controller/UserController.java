@@ -5,7 +5,9 @@ import com.icesi.edu.users.dto.UserCreateDTO;
 import com.icesi.edu.users.dto.UserDTO;
 import com.icesi.edu.users.mapper.UserMapper;
 import com.icesi.edu.users.service.UserService;
+import com.icesi.edu.users.validation.CustomAnnotations.LoggedUserValidation;
 import lombok.AllArgsConstructor;
+import org.hibernate.annotations.SQLInsert;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
@@ -22,13 +24,13 @@ public class UserController implements UserAPI {
     public final UserMapper userMapper;
 
     @Override
-    public UserDTO getUser(UUID userId) {
+    public UserDTO getUser(@LoggedUserValidation UUID userId) {
         return userMapper.fromUser(userService.getUser(userId));
     }
 
     @Override
-    public UserDTO createUser(@Valid UserCreateDTO userDTO) {
-        return userMapper.fromUser(userService.createUser(userMapper.fromDTO(userDTO)));
+    public UserDTO createUser(UserCreateDTO userDTO) {
+        return userMapper.fromUser(userService.createUser(userMapper.fromCreateDTO(userDTO)));
     }
 
     @Override
