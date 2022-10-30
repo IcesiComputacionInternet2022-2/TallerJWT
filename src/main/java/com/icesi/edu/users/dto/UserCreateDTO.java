@@ -32,7 +32,7 @@ public class UserCreateDTO {
     private String lastName;
 
 
-    @Size(min = 8,  max=30)
+    @Size(min = 1,  max=30)
     @CustomAnnotations.PasswordValidation
     private String password;
 

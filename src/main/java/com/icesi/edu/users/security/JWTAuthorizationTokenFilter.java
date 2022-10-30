@@ -114,10 +114,10 @@ public class JWTAuthorizationTokenFilter extends OncePerRequestFilter {
                 SecurityContextHolder.setUserContext(context);
                 filterChain.doFilter(request, response);
             } else {
-                createUnauthorizedFilter(new UserDemoException(HttpStatus.UNAUTHORIZED, new UserDemoError(UserErrorCode.CODE_02,"Debes estar autenticado para realizar este request")),response);
+                createUnauthorizedFilter(new UserDemoException(HttpStatus.UNAUTHORIZED, new UserDemoError(UserErrorCode.CODE_01,"You must be authenticated to make this request.")),response);
             }
         } catch (JwtException e) {
-            createUnauthorizedFilter(new UserDemoException(HttpStatus.UNAUTHORIZED, new UserDemoError(UserErrorCode.CODE_02,"Debes estar autenticado para realizar este request")), response);
+            createUnauthorizedFilter(new UserDemoException(HttpStatus.UNAUTHORIZED, new UserDemoError(UserErrorCode.CODE_01,"You must be authenticated to make this request.")), response);
         } finally {
             SecurityContextHolder.clearContext();
         }

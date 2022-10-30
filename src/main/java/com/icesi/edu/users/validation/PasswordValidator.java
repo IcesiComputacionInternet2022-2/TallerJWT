@@ -20,18 +20,19 @@ public class PasswordValidator implements ConstraintValidator<CustomAnnotations.
     @Override
     @SneakyThrows
     public boolean isValid(String str, ConstraintValidatorContext constraintValidatorContext) {
-
+/*
         String regex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[-+_!@#$%^&*., ?]).+$";
         Pattern p = Pattern.compile(regex);
-        Matcher m = p.matcher(str);
+        Matcher m = p.matcher(str);*/
+        String regex = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[#$%@]).+$";
 
-        boolean result = m.matches();
-
+        boolean result = str.matches(regex);
+/*
         if(!result){
             System.out.println("Mala contraseña");
             throw new UserDemoException(HttpStatus.BAD_REQUEST, new UserDemoError(UserErrorCode.CODE_01,"The password is not strong"));
         }
-        System.out.println("Buena contraseña");
+        System.out.println("Buena contraseña");*/
 
         return result;
     }

@@ -1,5 +1,6 @@
 package com.icesi.edu.users.service.impl;
 
+import com.icesi.edu.users.error.UserErrorCode;
 import com.icesi.edu.users.error.exception.UserDemoError;
 import com.icesi.edu.users.error.exception.UserDemoException;
 import com.icesi.edu.users.model.User;
@@ -31,10 +32,10 @@ public class UserServiceImpl implements UserService {
             if(userAuth.equals(userId)){
                 return userRepository.findById(userId).orElse(null);
     }else{
-        throw new UserDemoException(HttpStatus.UNAUTHORIZED, new UserDemoError("1234","No estás autorizado para esta request 1"));
+        throw new UserDemoException(HttpStatus.UNAUTHORIZED, new UserDemoError(UserErrorCode.CODE_01,"You cannot see third-party information."));
     }
 }else{
-        throw new UserDemoException(HttpStatus.UNAUTHORIZED, new UserDemoError("1234","No estás autorizado para esta request 2"));
+        throw new UserDemoException(HttpStatus.UNAUTHORIZED, new UserDemoError(UserErrorCode.CODE_01,"Authentication error"));
         }
     }
 
