@@ -1,7 +1,7 @@
 package com.icesi.edu.users.dto;
 
 import com.icesi.edu.users.model.User;
-import com.icesi.edu.users.validation.CustomAnnotations.NameValidation;
+import com.icesi.edu.users.validation.CustomAnnotations.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,6 +21,7 @@ public class UserDTO {
     private UUID id;
 
     @NotBlank
+    @EmailValidation
     private String email;
 
     @NotNull

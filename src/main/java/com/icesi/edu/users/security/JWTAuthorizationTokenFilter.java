@@ -47,7 +47,7 @@ import java.util.Arrays;
 import java.util.Optional;
 import java.util.UUID;
 
-import static com.icesi.edu.users.constants.ErrorCodes.CODE_UD_01;
+import static com.icesi.edu.users.constants.ErrorCodes.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @Component
@@ -79,7 +79,7 @@ public class JWTAuthorizationTokenFilter extends OncePerRequestFilter {
                 createUnauthorizedFilter(new UserDemoException(HttpStatus.UNAUTHORIZED, new UserDemoError(CODE_UD_01, CODE_UD_01.getMessage())), response);
             }
         } catch (JwtException e) {
-            createUnauthorizedFilter(new UserDemoException(HttpStatus.UNAUTHORIZED, new UserDemoError(CODE_UD_01, CODE_UD_01.getMessage())), response);
+            createUnauthorizedFilter(new UserDemoException(HttpStatus.UNAUTHORIZED, new UserDemoError(CODE_UD_02, CODE_UD_02.getMessage())), response);
         } finally {
             SecurityContextHolder.clearContext();
         }

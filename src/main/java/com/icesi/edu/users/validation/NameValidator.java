@@ -7,6 +7,6 @@ public class NameValidator implements ConstraintValidator<CustomAnnotations.Name
 
     @Override
     public boolean isValid(String s, ConstraintValidatorContext constraintValidatorContext) {
-        return s.equals("Juan");
+        return s.matches("[a-zA-Z]+");
     }
 }
