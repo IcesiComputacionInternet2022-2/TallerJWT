@@ -1,6 +1,7 @@
 package com.icesi.edu.users.api;
 
 import com.icesi.edu.users.dto.UserDTO;
+import com.icesi.edu.users.dto.UserDTOConsult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,9 +15,9 @@ import java.util.UUID;
 public interface UserAPI {
 
     @GetMapping("/{userId}")
-    public UserDTO getUser(@PathVariable UUID userId);
+    public UserDTOConsult getUser(@PathVariable UUID userId);
 
-    @PostMapping()
+    @PostMapping
     public UserDTO createUser(@RequestBody UserDTO userDTO);
 
     @GetMapping

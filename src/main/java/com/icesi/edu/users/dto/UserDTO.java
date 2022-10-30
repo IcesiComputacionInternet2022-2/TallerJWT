@@ -1,15 +1,16 @@
 package com.icesi.edu.users.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.icesi.edu.users.validation.CustomAnnotations;
+import lombok.*;
 
-import java.util.Date;
+import javax.validation.Valid;
 import java.util.UUID;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserDTO {
 
     private UUID id;
@@ -22,14 +23,6 @@ public class UserDTO {
 
     private String lastName;
 
-    private String date;
-
-    public UserDTO(UUID uuid, String email, String phoneNumber, String firstName, String lastName) {
-        this.id = uuid;
-        this.email = email;
-        this.phoneNumber = phoneNumber;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        date = "Not yet consulted";
-    }
+    @CustomAnnotations.PasswordValidation
+    private String password;
 }

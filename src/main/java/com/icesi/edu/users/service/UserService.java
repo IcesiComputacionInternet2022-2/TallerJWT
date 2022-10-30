@@ -1,6 +1,7 @@
 package com.icesi.edu.users.service;
 
 import com.icesi.edu.users.dto.UserDTO;
+import com.icesi.edu.users.dto.UserDTOConsult;
 import com.icesi.edu.users.model.User;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
