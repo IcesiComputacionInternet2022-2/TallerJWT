@@ -1,6 +1,8 @@
 package com.icesi.edu.users.api;
 
 import com.icesi.edu.users.dto.UserDTO;
+import com.icesi.edu.users.dto.UserNoPassDTO;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,6 +22,6 @@ public interface UserAPI {
     public UserDTO createUser(@RequestBody UserDTO userDTO);
 
     @GetMapping
-    public List<UserDTO> getUsers();
+    public List<UserNoPassDTO> getUsers();
 
 }

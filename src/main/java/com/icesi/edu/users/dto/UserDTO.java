@@ -1,18 +1,25 @@
 package com.icesi.edu.users.dto;
 
+import com.icesi.edu.users.validation.CustomAnnotations;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.validation.annotation.Validated;
 
-import java.util.Date;
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.UUID;
+
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserDTO {
 
-    private UUID id;
+    private UUID userId;
 
     private String email;
 
@@ -22,14 +29,8 @@ public class UserDTO {
 
     private String lastName;
 
-    private String date;
+    @CustomAnnotations.PasswordValidation
+    private String password;
 
-    public UserDTO(UUID uuid, String email, String phoneNumber, String firstName, String lastName) {
-        this.id = uuid;
-        this.email = email;
-        this.phoneNumber = phoneNumber;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        date = "Not yet consulted";
-    }
 }
+
