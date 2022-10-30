@@ -1,17 +1,21 @@
 package com.icesi.edu.users.service.impl;
 
+import com.icesi.edu.users.error.exception.UserError;
+import com.icesi.edu.users.error.exception.UserException;
 import com.icesi.edu.users.model.User;
 import com.icesi.edu.users.repository.UserRepository;
+import com.icesi.edu.users.security.SecurityContextHolder;
 import com.icesi.edu.users.service.UserService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
+
+import static com.icesi.edu.users.constant.UserErrorCode.S101;
 
 @AllArgsConstructor
 @Service
@@ -21,15 +25,27 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getUser(UUID userId) {
-        return userRepository.findById(userId).orElse(null);
+
+        UUID userAuth = SecurityContextHolder.getContext().getUserId();
+
+        if(userAuth == null || userAuth.equals(userId) == false){
+            throw new UserException(HttpStatus.UNAUTHORIZED, new UserError(S101, S101.getErrorMessage()));
+        }else{
+            return userRepository.findById(userId).orElse(null);
+        }
+
     }
 
     @Override
-    public User createUser(User userDTO) {
-        if(!isRepeated(userDTO.getEmail(),userDTO.getPhoneNumber())){
+    public User createUser(User userDTO) throws RuntimeException{
+
+        if(validateRepeatedEmail(userDTO.getEmail()) == false){
+            throw new RuntimeException("Email already in use. Please use another one");
+        } else if (validateRepeatedPhone(userDTO.getPhoneNumber()) == false) {
+            throw new RuntimeException("Phone already in use. Please use another one");
+        }else{
             return userRepository.save(userDTO);
         }
-        throw new RuntimeException("Repeated email or phoneNumber");
     }
 
     @Override
@@ -37,13 +53,11 @@ public class UserServiceImpl implements UserService {
         return StreamSupport.stream(userRepository.findAll().spliterator(),false).collect(Collectors.toList());
     }
 
-    private boolean isRepeated(String email,String number){
-        List<User> users = getUsers();
-        for (User x : users){
-            if (x.getPhoneNumber().equals(number) || x.getEmail().equals(email)){
-                return true;
-            }
-        }
-        return false;
+    private boolean validateRepeatedEmail(String email){
+        return userRepository.findByEmail(email).isEmpty();
+    }
+
+    private boolean validateRepeatedPhone(String phoneNumber){
+        return userRepository.findByPhoneNumber(phoneNumber).isEmpty();
     }
 }

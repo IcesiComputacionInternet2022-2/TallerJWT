@@ -1,159 +1,197 @@
-package com.icesi.edu.users.Controller;
+package com.icesi.edu.users.controller;
 
 import com.icesi.edu.users.controller.UserController;
 import com.icesi.edu.users.dto.UserDTO;
+import com.icesi.edu.users.dto.UserSensibleDTO;
 import com.icesi.edu.users.mapper.UserMapper;
 import com.icesi.edu.users.model.User;
 import com.icesi.edu.users.service.UserService;
+import com.icesi.edu.users.service.impl.UserServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.time.LocalDate;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 public class UserControllerTest {
+
     private UserController userController;
-    private UserService userService;
     private UserMapper userMapper;
-    private UserDTO userDTO;
-    private UUID uuid;
+    private UserService userService;
+    private UserSensibleDTO testUser;
+    private User userResponse;
+    private UUID id1;
 
     @BeforeEach
-    private void init(){
-        userService = mock(UserService.class);
+    public void init(){
+        userService =  mock(UserService.class);
         userMapper = mock(UserMapper.class);
-        userController = new UserController(userService,userMapper);
+
+        userController = new UserController(userService, userMapper);
+
+        id1 = UUID.randomUUID();
+        testUser = new UserSensibleDTO(id1, "juan@icesi.edu.co", "+573012345678", "Juan Jose", "Calderon", "aA1@");
+        userResponse = new User(id1, "juan@icesi.edu.co", "+573012345678", "Juan Jose", "Calderon", "aA1@");
+
+        when(userService.createUser(any())).thenReturn(userResponse);
     }
 
-    private void setupScene1(){
-        uuid = UUID.randomUUID();
-        String email = "juandavid227@icesi.edu.co";
-        String phoneNumber = "+573166670887";
-        String firstName = "Juan";
-        String lastName = "Cruz";
-        userDTO = new UserDTO(uuid,email,phoneNumber,firstName,lastName);
-    }
-
-    @Test
-    public void testCreateUsers(){
-        setupScene1();
-        assertFalse(createGeneratesException());
-    }
-
-    @Test
-    public void testGetUsers(){
-        userController.getUsers();
-        verify(userService, times(1)).getUsers();
-    }
-
-    @Test
-    public void testGetUser(){
-        setupScene1();
-        userController.getUser(uuid);
-        verify(userService,times(1)).getUser(uuid);
-    }
-
-    private boolean createGeneratesException(){
-        when(userMapper.fromUser(any())).thenReturn(userDTO);
-        try {
-            userController.createUser(userDTO);
-        }
-        catch (Exception e){
+    private boolean throwsException(UserSensibleDTO argUser){
+        try{
+            UserSensibleDTO userDto = userController.createUser(argUser);
+        }catch (RuntimeException e){
+            System.out.println(e.getMessage());
             return true;
         }
         return false;
     }
 
     @Test
-    public void testSetTheDateWhenUsingGetUser(){
-        setupScene1();
-        when(userMapper.fromUser(any())).thenReturn(userDTO);
-        UserDTO obtainedUserDto = userController.getUser(uuid);
-        assertEquals(obtainedUserDto.getDate(), LocalDate.now().toString());
+    public void testCreateValidUser(){
+        assertFalse(throwsException(testUser));
+        verify(userService, times(1)).createUser(any());
     }
 
     @Test
-    public void testEmailDomain(){
-        setupScene1();
-        userDTO.setEmail("juandavid@hotmail.com");
-        assertTrue(createGeneratesException());
+    public void testCreateUserWithoutEmailNorPhone(){
+        testUser.setEmail(null);
+        testUser.setPhoneNumber(null);
+        assertTrue(throwsException(testUser));
+        verify(userService, times(0)).createUser(any());
     }
 
     @Test
-    public void testEmailSpecialCharacters(){
-        setupScene1();
-        userDTO.setEmail("juandavid.227@icesi.edu.co");
-        assertTrue(createGeneratesException());
+    public void testCreateUserWithEmailDomainWrong(){
+        testUser.setEmail("juan@gmail.edu.co");
+        assertTrue(throwsException(testUser));
+        verify(userService, times(0)).createUser(any());
     }
 
     @Test
-    public void testPlus57Number(){
-        setupScene1();
-        userDTO.setPhoneNumber("3166670887");
-        assertTrue(createGeneratesException());
-    }
-    @Test
-    public void testLessThan10Digits(){
-        setupScene1();
-        userDTO.setPhoneNumber("+57316667088");
-        assertTrue(createGeneratesException());
-    }
-    @Test
-    public void testNoSpacesNumber(){
-        setupScene1();
-        userDTO.setPhoneNumber("+57 316 667 0");
-        assertTrue(createGeneratesException());
-    }
-    @Test
-    public void testCanCreateWithJustEmail(){
-        setupScene1();
-        userDTO.setPhoneNumber(null);
-        assertFalse(createGeneratesException());
-    }
-    @Test
-    public void testCanCreateWithJustNumber(){
-        setupScene1();
-        userDTO.setEmail(null);
-        assertFalse(createGeneratesException());
-    }
-    @Test
-    public void testCantCreateWithoutNumberOrEmail(){
-        setupScene1();
-        userDTO.setEmail(null);
-        userDTO.setPhoneNumber(null);
-        assertTrue(createGeneratesException());
-    }
-    @Test
-    public void testFirstnameLessThan120(){
-        setupScene1();
-        userDTO.setFirstName("IvinPQnwNIoUPZOXfwtjtmiXeeYvQzadvWDjMRmfvOowkOJkDKCoPkIWxMTCRNKXsBXGKMgjANGGmxgBrEKQZKdpWkpjTPQsuPLZGtEYuHZAivuFnkERfMICe");
-        assertTrue(createGeneratesException());
+    public void testCreateUserWithEmailUsernameWrong(){
+        testUser.setEmail("!:{}*&+@icesi.edu.co");
+        assertTrue(throwsException(testUser));
+        verify(userService, times(0)).createUser(any());
     }
 
     @Test
-    public void testLastnameLessThan120(){
-        setupScene1();
-        userDTO.setLastName("IvinPQnwNIoUPZOXfwtjtmiXeeYvQzadvWDjMRmfvOowkOJkDKCoPkIWxMTCRNKXsBXGKMgjANGGmxgBrEKQZKdpWkpjTPQsuPLZGtEYuHZAivuFnkERfMICe");
-        assertTrue(createGeneratesException());
+    public void testCreateUserWithCountryIndicatorWrong1(){
+        testUser.setPhoneNumber("+123012345678");
+        assertTrue(throwsException(testUser));
+        verify(userService, times(0)).createUser(any());
     }
 
     @Test
-    public void testFirstnameNoSpecialCharacters(){
-        setupScene1();
-        userDTO.setFirstName("1. When haces tu momo en un test. El futuro es hoy oiste viejo :v");
-        assertTrue(createGeneratesException());
+    public void testCreateUserWithCountryIndicatorWrong2(){
+        testUser.setPhoneNumber("573012345678");
+        assertTrue(throwsException(testUser));
+        verify(userService, times(0)).createUser(any());
     }
+
     @Test
-    public void testLastNameNoSpecialCharacters(){
-        setupScene1();
-        userDTO.setLastName("2. But falla en la ejecucion :,v . No me parece que este chico sea muy listo.jpg");
-        assertTrue(createGeneratesException());
+    public void testCreateUserWithInvalidAmountOfNumberSizeShorter(){
+        testUser.setPhoneNumber("+573012345");
+        assertTrue(throwsException(testUser));
+        verify(userService, times(0)).createUser(any());
     }
 
+    @Test
+    public void testCreateUserWithInvalidAmountOfNumberSizeLonger(){
+        testUser.setPhoneNumber("+5730123456789");
+        assertTrue(throwsException(testUser));
+        verify(userService, times(0)).createUser(any());
+    }
 
+    @Test
+    public void testCreateUserWithEmptyFirstName(){
+        testUser.setFirstName(null);
+        assertTrue(throwsException(testUser));
+        verify(userService, times(0)).createUser(any());
+    }
 
+    @Test
+    public void testCreateUserWithEmptyLastName(){
+        testUser.setLastName(null);
+        assertTrue(throwsException(testUser));
+        verify(userService, times(0)).createUser(any());
+    }
+
+    @Test
+    public void testCreateUserWithLongerFirstName(){
+        String longName = "abcdefghij" +
+                "abcdefghij" +
+                "abcdefghij" +
+                "abcdefghij" +
+                "abcdefghij" +
+                "abcdefghij" +
+                "abcdefghij" +
+                "abcdefghij" +
+                "abcdefghij" +
+                "abcdefghij" +
+                "abcdefghij" +
+                "abcdefghij" +
+                "a";
+        testUser.setFirstName(longName);
+        assertTrue(throwsException(testUser));
+        verify(userService, times(0)).createUser(any());
+    }
+
+    @Test
+    public void testCreateUserWithLongerLastName(){
+        String longName = "abcdefghij" +
+                "abcdefghij" +
+                "abcdefghij" +
+                "abcdefghij" +
+                "abcdefghij" +
+                "abcdefghij" +
+                "abcdefghij" +
+                "abcdefghij" +
+                "abcdefghij" +
+                "abcdefghij" +
+                "abcdefghij" +
+                "abcdefghij" +
+                "a";
+        testUser.setLastName(longName);
+        assertTrue(throwsException(testUser));
+        verify(userService, times(0)).createUser(any());
+    }
+
+    @Test
+    public void testCreateUserWithFirstNameWithSpecialCharacters(){
+        testUser.setFirstName("Juan#34");
+        assertTrue(throwsException(testUser));
+        verify(userService, times(0)).createUser(any());
+    }
+
+    @Test
+    public void testCreateUserWithLastNameWithSpecialCharacters(){
+        testUser.setLastName("C4lder0n^_^");
+        assertTrue(throwsException(testUser));
+        verify(userService, times(0)).createUser(any());
+    }
+
+    @Test
+    public void testGetUserCorrectly(){
+        when(userController.getUser(id1)).thenReturn(testUser);
+        assertEquals(testUser, userController.getUser(id1));
+        verify(userService, atLeastOnce()).getUser(any());
+    }
+
+    @Test
+    public void testGetUserNull(){
+        when(userService.getUser(null)).thenReturn(null);
+        boolean exception = false;
+        try{
+            userController.getUser(null);
+        }catch (RuntimeException e){
+            System.out.println(e.getMessage());
+            exception = true;
+        }
+        assertTrue(exception);
+        verify(userService, never()).getUser(any());
+    }
 
 }

@@ -1,4 +1,4 @@
-package com.icesi.edu.users.Integration;
+package com.icesi.edu.users.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.icesi.edu.users.dto.UserDTO;
