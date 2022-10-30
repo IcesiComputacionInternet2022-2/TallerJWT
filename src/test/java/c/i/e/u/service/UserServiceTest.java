@@ -1,4 +1,4 @@
-package service;
+package c.i.e.u.service;
 
 import com.icesi.edu.users.model.User;
 import com.icesi.edu.users.repository.UserRepository;
@@ -22,7 +22,7 @@ public class UserServiceTest {
     private UserRepository userRepository;
 
     @BeforeEach
-    private void init(){
+    public void init(){
         userRepository = mock(UserRepository.class);
         userService = new UserServiceImpl(userRepository);
     }
@@ -30,7 +30,7 @@ public class UserServiceTest {
     @Test
     public void testCreateUser(){
         UUID id = UUID.randomUUID();
-        User user = userService.createUser(new User(id,"johndoe@icesi.edu.co", "+573164518508", "John", "Doe"));
+        userService.createUser(new User(id,"johndoe@icesi.edu.co", "+573164518508", "John", "Doe", "passworD1!"));
         verify(userRepository, times(1)).save(any());
         assertNotNull(userRepository.findById(id));
     }
@@ -38,9 +38,9 @@ public class UserServiceTest {
     @Test
     public void testCreateUserDuplicatedId(){
         UUID id = UUID.randomUUID();
-        when(userRepository.save(any())).thenReturn(new User(id,"johndoe@icesi.edu.co", "+573164518508", "John", "Doe"));
+        when(userRepository.save(any())).thenReturn(new User(id,"johndoe@icesi.edu.co", "+573164518508", "John", "Doe", "passworD1!"));
         try {
-            userService.createUser(new User(id,"johndoe@icesi.edu.co", "+570000000000", "John", "Doe"));
+            userService.createUser(new User(id,"johndoe@icesi.edu.co", "+570000000000", "John", "Doe", "passworD1!"));
         } catch(RuntimeException runtimeException) {
             verify(userRepository, times(1)).save(any());
             assertNull(userRepository.findById(id));
@@ -50,9 +50,9 @@ public class UserServiceTest {
     @Test
     public void testCreateUserDuplicatedEmail(){
         UUID id = UUID.randomUUID();
-        when(userRepository.save(any())).thenReturn(new User(UUID.randomUUID(),"johndoe@icesi.edu.co", "+573164518508", "John", "Doe"));
+        when(userRepository.save(any())).thenReturn(new User(UUID.randomUUID(),"johndoe@icesi.edu.co", "+573164518508", "John", "Doe", "passworD1!"));
         try {
-            userService.createUser(new User(id,"johndoe@icesi.edu.co", "+570000000000", "John", "Doe"));
+            userService.createUser(new User(id,"johndoe@icesi.edu.co", "+570000000000", "John", "Doe", "passworD1!"));
         } catch(RuntimeException runtimeException) {
             verify(userRepository, times(1)).save(any());
             assertNull(userRepository.findById(id));
@@ -62,8 +62,8 @@ public class UserServiceTest {
     @Test
     public void testCreateUserDuplicatedPhoneNumber(){
         try {
-            when(userRepository.save(any())).thenReturn(new User(UUID.randomUUID(),"johndoe@icesi.edu.co", "+573164518508", "John", "Doe"));
-            userService.createUser(new User(UUID.randomUUID(),"aaa@icesi.edu.co", "+573164518508", "John", "Doe"));
+            when(userRepository.save(any())).thenReturn(new User(UUID.randomUUID(),"johndoe@icesi.edu.co", "+573164518508", "John", "Doe", "passworD1!"));
+            userService.createUser(new User(UUID.randomUUID(),"aaa@icesi.edu.co", "+573164518508", "John", "Doe", "passworD1!"));
         } catch(RuntimeException runtimeException) {
             verify(userRepository, times(1)).save(any());
             assertEquals(1, userService.getUsers().size());
@@ -73,8 +73,8 @@ public class UserServiceTest {
     @Test
     public void testCreateUserDuplicatedEmailAndPhoneNumber(){
         try {
-            when(userRepository.save(any())).thenReturn(new User(UUID.randomUUID(),"johndoe@icesi.edu.co", "+573164518508", "John", "Doe"));
-            userService.createUser(new User(UUID.randomUUID(),"johndoe@icesi.edu.co", "+573164518508", "John", "Doe"));
+            when(userRepository.save(any())).thenReturn(new User(UUID.randomUUID(),"johndoe@icesi.edu.co", "+573164518508", "John", "Doe", "passworD1!"));
+            userService.createUser(new User(UUID.randomUUID(),"johndoe@icesi.edu.co", "+573164518508", "John", "Doe", "passworD1!"));
         } catch(RuntimeException runtimeException) {
             verify(userRepository, times(1)).save(any());
             assertEquals(1, userService.getUsers().size());
@@ -84,8 +84,8 @@ public class UserServiceTest {
     @Test
     public void testGetUser(){
         UUID id = UUID.randomUUID();
-        User expectedUser = new User(id,"johndoe@icesi.edu.co", "+573164518508", "John", "Doe");
-        when(userRepository.findById(any())).thenReturn(Optional.of(new User(id,"johndoe@icesi.edu.co", "+573164518508", "John", "Doe")));
+        User expectedUser = new User(id,"johndoe@icesi.edu.co", "+573164518508", "John", "Doe", "passworD1!");
+        when(userRepository.findById(any())).thenReturn(Optional.of(new User(id,"johndoe@icesi.edu.co", "+573164518508", "John", "Doe", "passworD1!")));
         User retrievedUser = userService.getUser(id);
         verify(userRepository, times(1)).findById(any());
         assertEquals(expectedUser, retrievedUser);
@@ -94,8 +94,8 @@ public class UserServiceTest {
     @Test
     public void testGetUserNotEquals(){
         UUID id = UUID.randomUUID();
-        User notExpectedUser = new User(id,"johndoe@icesi.edu.co", "+573164518508", "John", "Doe");
-        when(userRepository.findById(any())).thenReturn(Optional.of(new User(UUID.randomUUID(),"johndoe@icesi.edu.co", "+573164518508", "John", "Doe")));
+        User notExpectedUser = new User(id,"johndoe@icesi.edu.co", "+573164518508", "John", "Doe", "passworD1!");
+        when(userRepository.findById(any())).thenReturn(Optional.of(new User(UUID.randomUUID(),"johndoe@icesi.edu.co", "+573164518508", "John", "Doe", "passworD1!")));
         User retrievedUser = userService.getUser(id);
         verify(userRepository, times(1)).findById(any());
         assertNotEquals(notExpectedUser, retrievedUser);
@@ -112,7 +112,7 @@ public class UserServiceTest {
     @Test
     public void testGetUsersNotEmpty() {
         List<User> users = new ArrayList<>();
-        users.add(new User(UUID.randomUUID(),"johndoe@icesi.edu.co", "+573164518508", "John", "Doe"));
+        users.add(new User(UUID.randomUUID(),"johndoe@icesi.edu.co", "+573164518508", "John", "Doe", "passworD1!"));
         when(userRepository.findAll()).thenReturn(users);
         assertEquals(1, userService.getUsers().size());
         verify(userRepository, times(1)).findAll();

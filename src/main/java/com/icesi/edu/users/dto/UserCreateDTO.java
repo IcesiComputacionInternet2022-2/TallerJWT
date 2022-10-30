@@ -1,17 +1,19 @@
 package com.icesi.edu.users.dto;
 
+import com.icesi.edu.users.validation.CustomAnnotations.PasswordValidation;
 import com.icesi.edu.users.validation.CustomAnnotations.NameValidation;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserCreateDTO {
@@ -25,7 +27,6 @@ public class UserCreateDTO {
     private String phoneNumber;
 
     @Size(min = 1, max = 120)
-    @NameValidation
     private String firstName;
 
     @NotNull
@@ -33,6 +34,6 @@ public class UserCreateDTO {
     private String lastName;
 
     @NotNull
+    @PasswordValidation
     private String password;
-
 }

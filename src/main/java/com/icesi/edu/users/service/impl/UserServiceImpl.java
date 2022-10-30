@@ -1,12 +1,15 @@
 package com.icesi.edu.users.service.impl;
 
+import com.icesi.edu.users.constant.UserErrorCode;
+import com.icesi.edu.users.exception.UserError;
+import com.icesi.edu.users.exception.UserException;
 import com.icesi.edu.users.model.User;
 import com.icesi.edu.users.repository.UserRepository;
 import com.icesi.edu.users.service.UserService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -24,18 +27,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User createUser(User userDTO){
-        if(!isEmailOrPhoneNumberDuplicated(userDTO))
-            return userRepository.save(userDTO);
+    public User createUser(User user){
+        if(!isEmailOrPhoneNumberDuplicated(user))
+            return userRepository.save(user);
         else
-            throw new RuntimeException();
+            throw new UserException(HttpStatus.BAD_REQUEST, new UserError(UserErrorCode.CODE_05, UserErrorCode.CODE_05.getMessage()));
     }
 
-    private boolean isEmailOrPhoneNumberDuplicated(User userDTO){
+    private boolean isEmailOrPhoneNumberDuplicated(User user){
         boolean isEmailDuplicated = getUsers().stream().anyMatch(
-                user -> user.getEmail().equalsIgnoreCase(userDTO.getEmail()));
+                u -> u.getEmail().equalsIgnoreCase(user.getEmail()));
         boolean isPhoneNumberDuplicated = getUsers().stream().anyMatch(
-                user -> user.getPhoneNumber().equals(userDTO.getPhoneNumber()));
+                u -> u.getPhoneNumber().equals(user.getPhoneNumber()));
         return isEmailDuplicated || isPhoneNumberDuplicated;
     }
 

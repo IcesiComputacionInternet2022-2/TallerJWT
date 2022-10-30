@@ -1,6 +1,7 @@
-package controller;
+package c.i.e.u.controller;
 
 import com.icesi.edu.users.controller.UserController;
+import com.icesi.edu.users.dto.UserCreateDTO;
 import com.icesi.edu.users.dto.UserDTO;
 import com.icesi.edu.users.mapper.UserMapper;
 import com.icesi.edu.users.model.User;
@@ -31,8 +32,8 @@ public class UserControllerTest {
 
     @Test
     public void testCreateUser(){
-        UserDTO userDTO = new UserDTO(UUID.randomUUID(),"johndoe@icesi.edu.co", "+573164518508", "John", "Doe", LocalDate.now());
-        userController.createUser(userDTO);
+        UserCreateDTO userCreateDTO = new UserCreateDTO(UUID.randomUUID(),"johndoe@icesi.edu.co", "+573164518508", "John", "Doe", "passworD1!");
+        userController.createUser(userCreateDTO);
         verify(userMapper, times(1)).fromUser(any());
     }
 
@@ -67,7 +68,7 @@ public class UserControllerTest {
     @Test
     public void testGetUsersNotEmpty() {
         List<User> users = new ArrayList<>();
-        users.add(new User(UUID.randomUUID(),"johndoe@icesi.edu.co", "+573164518508", "John", "Doe"));
+        users.add(new User(UUID.randomUUID(),"johndoe@icesi.edu.co", "+573164518508", "John", "Doe", "passworD1!"));
         when(userService.getUsers()).thenReturn(users);
         assertEquals(1, userController.getUsers().size());
         verify(userService, times(1)).getUsers();

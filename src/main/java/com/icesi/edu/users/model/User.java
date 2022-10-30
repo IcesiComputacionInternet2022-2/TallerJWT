@@ -1,5 +1,6 @@
 package com.icesi.edu.users.model;
 
+import com.icesi.edu.users.validation.CustomAnnotations;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -34,7 +35,6 @@ public class User {
     private String lastName;
 
     private String password;
-
 
     @PrePersist
     public void generateId(){

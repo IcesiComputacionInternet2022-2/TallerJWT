@@ -21,12 +21,19 @@
 
 package com.icesi.edu.users.security;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.icesi.edu.users.constant.LoginErrorCode;
+import com.icesi.edu.users.exception.LoginError;
+import com.icesi.edu.users.exception.LoginException;
 import com.icesi.edu.users.utils.JWTParser;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.MalformedJwtException;
+import lombok.SneakyThrows;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -36,10 +43,11 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.security.InvalidParameterException;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.UUID;
+
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @Component
 @Order(1)
@@ -47,11 +55,8 @@ public class JWTAuthorizationTokenFilter extends OncePerRequestFilter {
     
    private static final String AUTHORIZATION_HEADER = "Authorization";
    private static final String TOKEN_PREFIX = "Bearer ";
-
    private static final String USER_ID_CLAIM_NAME = "userId";
-
-   private static final String[] excludedPaths = {"POST /users", "POST /login"};
-
+   private static final String[] excludedPaths = {"POST /login"};
 
     @Override
     protected void doFilterInternal(
@@ -65,19 +70,40 @@ public class JWTAuthorizationTokenFilter extends OncePerRequestFilter {
                 Claims claims = JWTParser.decodeJWT(jwtToken);
                 SecurityContext context = parseClaims(jwtToken, claims);
                 SecurityContextHolder.setUserContext(context);
+                String method = request.getMethod();
+                String path = request.getRequestURI();
+                if (method.equals("GET") && path.startsWith("/users/") && !path.endsWith(SecurityContextHolder.getContext().getUserId().toString())) {
+                    createUnauthorizedFilter(new LoginException(HttpStatus.UNAUTHORIZED, new LoginError(LoginErrorCode.CODE_01, LoginErrorCode.CODE_01.getMessage())), response);
+                }
                 filterChain.doFilter(request, response);
             } else {
-                throw new InvalidParameterException();
+                createUnauthorizedFilter(new LoginException(HttpStatus.UNAUTHORIZED, new LoginError(LoginErrorCode.CODE_01, LoginErrorCode.CODE_01.getMessage())), response);
             }
         } catch (JwtException e) {
-            System.out.println("Error verifying JWT token: " + e.getMessage());
+            e.printStackTrace();
+            createUnauthorizedFilter(new LoginException(HttpStatus.UNAUTHORIZED, new LoginError(LoginErrorCode.CODE_01, LoginErrorCode.CODE_01.getMessage())), response);
         } finally {
             SecurityContextHolder.clearContext();
         }
     }
 
+    @SneakyThrows
+    private void createUnauthorizedFilter(LoginException loginException, HttpServletResponse response) {
+
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        LoginError loginError = loginException.getLoginError();
+
+        String message = objectMapper.writeValueAsString(loginError);
+
+        response.setStatus(401);
+        response.setHeader(HttpHeaders.CONTENT_TYPE, APPLICATION_JSON_VALUE);
+        response.getWriter().write(message);
+        response.getWriter().flush();
+    }
+
     private SecurityContext parseClaims(String jwtToken, Claims claims) {
-        String userId = claimKey(claims, USER_ID_CLAIM_NAME);
+        String userId = claimKey(claims);
 
         SecurityContext context = new SecurityContext();
         try {
@@ -89,8 +115,8 @@ public class JWTAuthorizationTokenFilter extends OncePerRequestFilter {
         return context;
     }
 
-    private String claimKey(Claims claims, String key) {
-        String value = (String) claims.get(key);
+    private String claimKey(Claims claims) {
+        String value = (String) claims.get(USER_ID_CLAIM_NAME);
         return Optional.ofNullable(value).orElseThrow();
     }
 
@@ -104,7 +130,4 @@ public class JWTAuthorizationTokenFilter extends OncePerRequestFilter {
         String authenticationHeader = request.getHeader(AUTHORIZATION_HEADER);
         return authenticationHeader != null && authenticationHeader.startsWith(TOKEN_PREFIX);
     }
-
-
-
 }
