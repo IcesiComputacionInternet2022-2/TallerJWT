@@ -4,7 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import javax.validation.constraints.*;
+
 import java.util.UUID;
 
 @Data
@@ -22,14 +23,9 @@ public class UserDTO {
 
     private String lastName;
 
-    private String date;
 
-    public UserDTO(UUID uuid, String email, String phoneNumber, String firstName, String lastName) {
-        this.id = uuid;
-        this.email = email;
-        this.phoneNumber = phoneNumber;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        date = "Not yet consulted";
-    }
+    @NotNull
+    @Size(min = 8, max = 30)
+    @Pattern(regexp = "/^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[$@$!%*?&])([A-Za-z\\d$@$!%*?&]|[^ ]){8,15}$/",message = "password is too weak")
+    private String password;
 }
