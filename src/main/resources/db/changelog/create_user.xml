@@ -5,7 +5,6 @@
     <!-- Refer to https://docs.liquibase.com/change-types/community/create-table.html -->
 
     <changeSet id="33d4e9bc-7210-47c3-9617-c56ab7c0750d" author="juan.prada" failOnError="true">
-
         <createTable tableName="user">
             <column name="id" type="UUID">
                 <constraints nullable="false" primaryKey="true" />
@@ -14,6 +13,16 @@
             <column name="phone_number" type="varchar(255)" />
             <column name="first_name" type="varchar(255)" />
             <column name="last_name" type="varchar(255)" />
+            <column name="password" type="varchar(255)" />
         </createTable>
+
+        <insert tableName="user">
+            <column name="id" value="ea72c7a4-5605-11ed-bdc3-0242ac120002" />
+            <column name="email" value="juseros9@gmail.com" />
+            <column name="phone_number" value="3175029108" />
+            <column name="first_name" value="Sebastian" />
+            <column name="last_name" value="Rodriguez" />
+            <column name="password" value="admin123" />
+        </insert>
     </changeSet>
 </databaseChangeLog>

@@ -1,159 +1,148 @@
-package com.icesi.edu.users.Controller;
+package com.icesi.edu.users.controller;
 
-import com.icesi.edu.users.controller.UserController;
 import com.icesi.edu.users.dto.UserDTO;
 import com.icesi.edu.users.mapper.UserMapper;
-import com.icesi.edu.users.model.User;
 import com.icesi.edu.users.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.time.LocalDate;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
 public class UserControllerTest {
     private UserController userController;
     private UserService userService;
     private UserMapper userMapper;
-    private UserDTO userDTO;
-    private UUID uuid;
+    private UserDTO newUser;
+
+
 
     @BeforeEach
-    private void init(){
+    public void init(){
         userService = mock(UserService.class);
         userMapper = mock(UserMapper.class);
         userController = new UserController(userService,userMapper);
     }
-
-    private void setupScene1(){
-        uuid = UUID.randomUUID();
-        String email = "juandavid227@icesi.edu.co";
-        String phoneNumber = "+573166670887";
+    public boolean haveException(){
+        boolean existException = false;
+        try {
+            UserDTO createdUser = userController.createUser(newUser);
+        }catch (RuntimeException runtimeException){
+            existException = true;
+        }
+        return existException;
+    }
+    @Test
+    public void registerUserSuccessfully(){
+        String email = "JuanRodriguez@icesi.edu.co";
+        String phone = "+573175029108";
         String firstName = "Juan";
-        String lastName = "Cruz";
-        userDTO = new UserDTO(uuid,email,phoneNumber,firstName,lastName);
+        String lastName = "rodriguez";
+        newUser = new UserDTO(UUID.randomUUID(), email, phone, firstName, lastName);
+        assertFalse(haveException());
     }
-
     @Test
-    public void testCreateUsers(){
-        setupScene1();
-        assertFalse(createGeneratesException());
+    public void registerUserNotSuccessfully(){
+        String email = "JuanRodriguez@icesi.edu.co";
+        String phone = "+573175029108";
+        newUser = new UserDTO(UUID.randomUUID(), email, phone, null, null);
+        assertTrue(haveException());
     }
-
     @Test
-    public void testGetUsers(){
+    public void invalidEmailDomain(){
+        String email = "JuanRodriguez@u.icesi.edu.co";
+        String phone = "+573175029108";
+        String firstName = "Juan";
+        String lastName = "rodriguez";
+        newUser = new UserDTO(UUID.randomUUID(), email, phone, firstName, lastName);
+        assertTrue(haveException());
+    }
+    @Test
+    public void invalidEmailCharacters(){
+        String email = "Juan.Rodriguez-26@icesi.edu.co";
+        String phone = "+573175029108";
+        String firstName = "Juan";
+        String lastName = "rodriguez";
+        newUser = new UserDTO(UUID.randomUUID(), email, phone, firstName, lastName);
+        assertTrue(haveException());
+    }
+    @Test
+    public void invalidPhoneSpaces(){
+        String email = "JuanRodriguez@icesi.edu.co";
+        String phone = "+57317 029108";
+        String firstName = "Juan";
+        String lastName = "rodriguez";
+        newUser = new UserDTO(UUID.randomUUID(), email, phone, firstName, lastName);
+        assertTrue(haveException());
+    }
+    @Test
+    public void invalidPhonePrefix(){
+        String email = "JuanRodriguez@icesi.edu.co";
+        String phone = "+69317029108";
+        String firstName = "Juan";
+        String lastName = "rodriguez";
+        newUser = new UserDTO(UUID.randomUUID(), email, phone, firstName, lastName);
+        assertTrue(haveException());
+    }
+    @Test
+    public void invalidPhoneLength(){
+        String email = "JuanRodriguez@icesi.edu.co";
+        String phone = "+57317029108201";
+        String firstName = "Juan";
+        String lastName = "rodriguez";
+        newUser = new UserDTO(UUID.randomUUID(), email, phone, firstName, lastName);
+        assertTrue(haveException());
+    }
+    @Test
+    public void invalidPhoneFormat(){
+        String email = "JuanRodriguez@icesi.edu.co";
+        String phone = "+57317'l29108";
+        String firstName = "Juan";
+        String lastName = "rodriguez";
+        newUser = new UserDTO(UUID.randomUUID(), email, phone, firstName, lastName);
+        assertTrue(haveException());
+    }
+    @Test
+    public void invalidFirstNameCharacters(){
+        String email = "JuanRodriguez@icesi.edu.co";
+        String phone = "+57317029108";
+        String firstName = "Juan8";
+        String lastName = "rodriguez";
+        newUser = new UserDTO(UUID.randomUUID(), email, phone, firstName, lastName);
+        assertTrue(haveException());
+    }
+    public void invalidFirstNameLength(){
+        String email = "JuanRodriguez@icesi.edu.co";
+        String phone = "+57317029108";
+        String firstName = "Juannnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn";
+        String lastName = "rodriguez";
+        newUser = new UserDTO(UUID.randomUUID(), email, phone, firstName, lastName);
+        assertTrue(haveException());
+    }
+    public void invalidLastNameLength(){
+        String email = "JuanRodriguez@icesi.edu.co";
+        String phone = "+57317029108";
+        String firstName = "Juan";
+        String lastName = "rodriguezzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz";
+        newUser = new UserDTO(UUID.randomUUID(), email, phone, firstName, lastName);
+        assertTrue(haveException());
+    }
+    public void invalidLastNameCharacters(){
+        String email = "JuanRodriguez@icesi.edu.co";
+        String phone = "+57317029108";
+        String firstName = "Juan";
+        String lastName = "rodriguez.";
+        newUser = new UserDTO(UUID.randomUUID(), email, phone, firstName, lastName);
+        assertTrue(haveException());
+    }
+    @Test
+    public void acceptGetUsersOneTime(){
         userController.getUsers();
         verify(userService, times(1)).getUsers();
     }
-
-    @Test
-    public void testGetUser(){
-        setupScene1();
-        userController.getUser(uuid);
-        verify(userService,times(1)).getUser(uuid);
-    }
-
-    private boolean createGeneratesException(){
-        when(userMapper.fromUser(any())).thenReturn(userDTO);
-        try {
-            userController.createUser(userDTO);
-        }
-        catch (Exception e){
-            return true;
-        }
-        return false;
-    }
-
-    @Test
-    public void testSetTheDateWhenUsingGetUser(){
-        setupScene1();
-        when(userMapper.fromUser(any())).thenReturn(userDTO);
-        UserDTO obtainedUserDto = userController.getUser(uuid);
-        assertEquals(obtainedUserDto.getDate(), LocalDate.now().toString());
-    }
-
-    @Test
-    public void testEmailDomain(){
-        setupScene1();
-        userDTO.setEmail("juandavid@hotmail.com");
-        assertTrue(createGeneratesException());
-    }
-
-    @Test
-    public void testEmailSpecialCharacters(){
-        setupScene1();
-        userDTO.setEmail("juandavid.227@icesi.edu.co");
-        assertTrue(createGeneratesException());
-    }
-
-    @Test
-    public void testPlus57Number(){
-        setupScene1();
-        userDTO.setPhoneNumber("3166670887");
-        assertTrue(createGeneratesException());
-    }
-    @Test
-    public void testLessThan10Digits(){
-        setupScene1();
-        userDTO.setPhoneNumber("+57316667088");
-        assertTrue(createGeneratesException());
-    }
-    @Test
-    public void testNoSpacesNumber(){
-        setupScene1();
-        userDTO.setPhoneNumber("+57 316 667 0");
-        assertTrue(createGeneratesException());
-    }
-    @Test
-    public void testCanCreateWithJustEmail(){
-        setupScene1();
-        userDTO.setPhoneNumber(null);
-        assertFalse(createGeneratesException());
-    }
-    @Test
-    public void testCanCreateWithJustNumber(){
-        setupScene1();
-        userDTO.setEmail(null);
-        assertFalse(createGeneratesException());
-    }
-    @Test
-    public void testCantCreateWithoutNumberOrEmail(){
-        setupScene1();
-        userDTO.setEmail(null);
-        userDTO.setPhoneNumber(null);
-        assertTrue(createGeneratesException());
-    }
-    @Test
-    public void testFirstnameLessThan120(){
-        setupScene1();
-        userDTO.setFirstName("IvinPQnwNIoUPZOXfwtjtmiXeeYvQzadvWDjMRmfvOowkOJkDKCoPkIWxMTCRNKXsBXGKMgjANGGmxgBrEKQZKdpWkpjTPQsuPLZGtEYuHZAivuFnkERfMICe");
-        assertTrue(createGeneratesException());
-    }
-
-    @Test
-    public void testLastnameLessThan120(){
-        setupScene1();
-        userDTO.setLastName("IvinPQnwNIoUPZOXfwtjtmiXeeYvQzadvWDjMRmfvOowkOJkDKCoPkIWxMTCRNKXsBXGKMgjANGGmxgBrEKQZKdpWkpjTPQsuPLZGtEYuHZAivuFnkERfMICe");
-        assertTrue(createGeneratesException());
-    }
-
-    @Test
-    public void testFirstnameNoSpecialCharacters(){
-        setupScene1();
-        userDTO.setFirstName("1. When haces tu momo en un test. El futuro es hoy oiste viejo :v");
-        assertTrue(createGeneratesException());
-    }
-    @Test
-    public void testLastNameNoSpecialCharacters(){
-        setupScene1();
-        userDTO.setLastName("2. But falla en la ejecucion :,v . No me parece que este chico sea muy listo.jpg");
-        assertTrue(createGeneratesException());
-    }
-
-
 
 
 }
