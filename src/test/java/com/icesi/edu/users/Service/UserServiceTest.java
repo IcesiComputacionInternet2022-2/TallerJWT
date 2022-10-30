@@ -34,8 +34,9 @@ public class UserServiceTest {
         String phoneNumber = "+573166670887";
         String firstName = "Juan";
         String lastName = "Cruz";
+        String password = "Abc123@";
 
-        user = new User(uuid, email, phoneNumber, firstName, lastName);
+        user = new User(uuid, email, phoneNumber, firstName, lastName,password);
     }
 
     @Test
@@ -65,9 +66,10 @@ public class UserServiceTest {
         String phoneNumber2 = "+573207828580";
         String firstName2 = "Liliana";
         String lastName2 = "Garcia";
+        String password = "Abc123@";
 
         //Create User
-        User user2 = new User(uuid2, email2, phoneNumber2, firstName2, lastName2);
+        User user2 = new User(uuid2, email2, phoneNumber2, firstName2, lastName2,password);
         userService.createUser(user);
         userService.createUser(user2);
         userService.getUsers();

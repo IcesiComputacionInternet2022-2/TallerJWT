@@ -1,6 +1,7 @@
 package com.icesi.edu.users.Integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.icesi.edu.users.dto.UserCreateDTO;
 import com.icesi.edu.users.dto.UserDTO;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.BeforeEach;
@@ -55,8 +56,8 @@ public class UserDemoIntegrationTest {
                 .content(body)).andExpect(status().isOk())
                 .andReturn();
 
-        UserDTO userResult = objectMapper.readValue(result.getResponse().getContentAsString(),UserDTO.class);
-        assertThat(userResult,hasProperty("firstName",is("Juan")));
+        UserCreateDTO userResult = objectMapper.readValue(result.getResponse().getContentAsString(), UserCreateDTO.class);
+        assertThat(userResult,hasProperty("firstName",is("Johan")));
     }
 
     @SneakyThrows

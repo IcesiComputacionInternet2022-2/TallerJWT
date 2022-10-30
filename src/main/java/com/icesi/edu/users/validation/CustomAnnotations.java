@@ -56,7 +56,7 @@ public interface CustomAnnotations {
 
     @Target(ElementType.METHOD)
     @Retention(RetentionPolicy.RUNTIME)
-    @PostAuthorize(value = "authentication.principal.username.equals(#userId) ")
+    @PreAuthorize(value = "authentication.principal.username.equals(#userId) ")
     @interface IsUser {
         String message() default "UserID is invalid";
 

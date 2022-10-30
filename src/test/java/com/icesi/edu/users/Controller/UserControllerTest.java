@@ -1,7 +1,7 @@
 package com.icesi.edu.users.Controller;
 
 import com.icesi.edu.users.controller.UserController;
-import com.icesi.edu.users.dto.UserDTO;
+import com.icesi.edu.users.dto.UserCreateDTO;
 import com.icesi.edu.users.mapper.UserMapper;
 import com.icesi.edu.users.model.User;
 import com.icesi.edu.users.service.UserService;
@@ -18,10 +18,9 @@ public class UserControllerTest {
     private UserController userController;
     private UserService userService;
     private UserMapper userMapper;
-    private UserDTO userDTO;
+    private UserCreateDTO userCreateDTO;
     private UUID uuid;
-
-    /*
+    
 
     @BeforeEach
     private void init(){
@@ -36,7 +35,8 @@ public class UserControllerTest {
         String phoneNumber = "+573166670887";
         String firstName = "Juan";
         String lastName = "Cruz";
-        userDTO = new UserDTO(uuid,email,phoneNumber,firstName,lastName);
+        String password = "Abc123@";
+        userCreateDTO = new UserCreateDTO(uuid,email,phoneNumber,firstName,lastName,password);
     }
 
     @Test
@@ -59,9 +59,9 @@ public class UserControllerTest {
     }
 
     private boolean createGeneratesException(){
-        when(userMapper.fromUser(any())).thenReturn(userDTO);
+        when(userMapper.fromUserWithPassword(any())).thenReturn(userCreateDTO);
         try {
-            userController.createUser(userDTO);
+            userController.createUser(userCreateDTO);
         }
         catch (Exception e){
             return true;
@@ -70,92 +70,81 @@ public class UserControllerTest {
     }
 
     @Test
-    public void testSetTheDateWhenUsingGetUser(){
-        setupScene1();
-        when(userMapper.fromUser(any())).thenReturn(userDTO);
-        UserDTO obtainedUserDto = userController.getUser(uuid);
-        assertEquals(obtainedUserDto.getDate(), LocalDate.now().toString());
-    }
-
-    @Test
     public void testEmailDomain(){
         setupScene1();
-        userDTO.setEmail("juandavid@hotmail.com");
+        userCreateDTO.setEmail("juandavid@hotmail.com");
         assertTrue(createGeneratesException());
     }
 
     @Test
     public void testEmailSpecialCharacters(){
         setupScene1();
-        userDTO.setEmail("juandavid.227@icesi.edu.co");
+        userCreateDTO.setEmail("juandavid.227@icesi.edu.co");
         assertTrue(createGeneratesException());
     }
 
     @Test
     public void testPlus57Number(){
         setupScene1();
-        userDTO.setPhoneNumber("3166670887");
+        userCreateDTO.setPhoneNumber("3166670887");
         assertTrue(createGeneratesException());
     }
     @Test
     public void testLessThan10Digits(){
         setupScene1();
-        userDTO.setPhoneNumber("+57316667088");
+        userCreateDTO.setPhoneNumber("+57316667088");
         assertTrue(createGeneratesException());
     }
     @Test
     public void testNoSpacesNumber(){
         setupScene1();
-        userDTO.setPhoneNumber("+57 316 667 0");
+        userCreateDTO.setPhoneNumber("+57 316 667 0");
         assertTrue(createGeneratesException());
     }
     @Test
     public void testCanCreateWithJustEmail(){
         setupScene1();
-        userDTO.setPhoneNumber(null);
+        userCreateDTO.setPhoneNumber(null);
         assertFalse(createGeneratesException());
     }
     @Test
     public void testCanCreateWithJustNumber(){
         setupScene1();
-        userDTO.setEmail(null);
+        userCreateDTO.setEmail(null);
         assertFalse(createGeneratesException());
     }
     @Test
     public void testCantCreateWithoutNumberOrEmail(){
         setupScene1();
-        userDTO.setEmail(null);
-        userDTO.setPhoneNumber(null);
+        userCreateDTO.setEmail(null);
+        userCreateDTO.setPhoneNumber(null);
         assertTrue(createGeneratesException());
     }
     @Test
     public void testFirstnameLessThan120(){
         setupScene1();
-        userDTO.setFirstName("IvinPQnwNIoUPZOXfwtjtmiXeeYvQzadvWDjMRmfvOowkOJkDKCoPkIWxMTCRNKXsBXGKMgjANGGmxgBrEKQZKdpWkpjTPQsuPLZGtEYuHZAivuFnkERfMICe");
+        userCreateDTO.setFirstName("IvinPQnwNIoUPZOXfwtjtmiXeeYvQzadvWDjMRmfvOowkOJkDKCoPkIWxMTCRNKXsBXGKMgjANGGmxgBrEKQZKdpWkpjTPQsuPLZGtEYuHZAivuFnkERfMICe");
         assertTrue(createGeneratesException());
     }
 
     @Test
     public void testLastnameLessThan120(){
         setupScene1();
-        userDTO.setLastName("IvinPQnwNIoUPZOXfwtjtmiXeeYvQzadvWDjMRmfvOowkOJkDKCoPkIWxMTCRNKXsBXGKMgjANGGmxgBrEKQZKdpWkpjTPQsuPLZGtEYuHZAivuFnkERfMICe");
+        userCreateDTO.setLastName("IvinPQnwNIoUPZOXfwtjtmiXeeYvQzadvWDjMRmfvOowkOJkDKCoPkIWxMTCRNKXsBXGKMgjANGGmxgBrEKQZKdpWkpjTPQsuPLZGtEYuHZAivuFnkERfMICe");
         assertTrue(createGeneratesException());
     }
 
     @Test
     public void testFirstnameNoSpecialCharacters(){
         setupScene1();
-        userDTO.setFirstName("1. When haces tu momo en un test. El futuro es hoy oiste viejo :v");
+        userCreateDTO.setFirstName("1. When haces tu momo en un test. El futuro es hoy oiste viejo :v");
         assertTrue(createGeneratesException());
     }
     @Test
     public void testLastNameNoSpecialCharacters(){
         setupScene1();
-        userDTO.setLastName("2. But falla en la ejecucion :,v . No me parece que este chico sea muy listo.jpg");
+        userCreateDTO.setLastName("2. But falla en la ejecucion :,v . No me parece que este chico sea muy listo.jpg");
         assertTrue(createGeneratesException());
     }
-
-
-
-*/
+    
 }
