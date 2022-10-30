@@ -14,3 +14,7 @@
 
 
 # Fecha maxima de subida del taller: Domingo 30 de octubre del 2022 GMT -5.
+
+
+
+#### Disclaimer: El proyecto parece tener dos autores porque cuando hice pull del repositorio un compañero había contaminado el git y aunque borré todos los archivos igual seguía apareciendo.
