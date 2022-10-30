@@ -78,7 +78,7 @@ public class JWTAuthorizationTokenFilter extends OncePerRequestFilter {
                 createUnauthorizedFilter(new UserDemoException(HttpStatus.UNAUTHORIZED, new UserDemoError("CODE_UD_01", ErrorCodes.CODE_01.getMessage())), response);
             }
         } catch (JwtException e) {
-            createUnauthorizedFilter(new UserDemoException(HttpStatus.UNAUTHORIZED, new UserDemoError("CODE_UD_01", ErrorCodes.CODE_01.getMessage())), response);
+            createUnauthorizedFilter(new UserDemoException(HttpStatus.UNAUTHORIZED, new UserDemoError("CODE_05", ErrorCodes.CODE_05.getMessage())), response);
         } finally {
             SecurityContextHolder.clearContext();
         }
@@ -126,6 +126,7 @@ public class JWTAuthorizationTokenFilter extends OncePerRequestFilter {
         String authenticationHeader = request.getHeader(AUTHORIZATION_HEADER);
         return authenticationHeader != null && authenticationHeader.startsWith(TOKEN_PREFIX);
     }
+
 
 
 

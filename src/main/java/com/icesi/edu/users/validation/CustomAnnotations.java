@@ -22,13 +22,13 @@ public interface CustomAnnotations {
     }
 
     @Documented
-    @Constraint(validatedBy = NameValidator.class)
+    @Constraint(validatedBy = EmailValidator.class)
     @Target({ ElementType.METHOD, ElementType.FIELD })
     @Retention(RetentionPolicy.RUNTIME)
     @interface EmailValidation {
 
 
-        String message() default "Name is invalid";
+        String message() default "Email is invalid";
 
         Class<?>[] groups() default {};
 
@@ -36,7 +36,7 @@ public interface CustomAnnotations {
 
     }
     @Documented
-    @Constraint(validatedBy = NameValidator.class)
+    @Constraint(validatedBy = PasswordValidation.class)
     @Target({ ElementType.METHOD, ElementType.FIELD })
     @Retention(RetentionPolicy.RUNTIME)
     @interface PasswordValidation {

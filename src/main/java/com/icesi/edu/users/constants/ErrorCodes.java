@@ -12,6 +12,7 @@ public enum ErrorCodes {
     CODE_02("Error en la digitacion de la entrada"),
     CODE_03("El email no es valido"),
     CODE_04("Contraseña incorrecta");
+    CODE_05("No tienes un token valido")
 
 
     private String message;

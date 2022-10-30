@@ -21,6 +21,7 @@ public class UserDTO {
     private UUID id;
 
     @NotBlank
+    @EmailValidation
     private String email;
 
     @NotNull
@@ -33,6 +34,5 @@ public class UserDTO {
     @NotNull
     @Size(min = 1, max = 120)
     private String lastName;
-
 
 }
