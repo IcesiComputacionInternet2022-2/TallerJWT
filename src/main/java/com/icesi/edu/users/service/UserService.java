@@ -2,6 +2,8 @@ package com.icesi.edu.users.service;
 
 import com.icesi.edu.users.dto.UserDTO;
 import com.icesi.edu.users.model.User;
+import com.icesi.edu.users.validation.CustomAnnotations;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;

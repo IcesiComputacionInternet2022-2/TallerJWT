@@ -17,4 +17,6 @@ public class InitialDataConfig {
         resourceDatabasePopulator.addScript(new ClassPathResource("/data.sql"));
         DatabasePopulatorUtils.execute(resourceDatabasePopulator, dataSource);
     }
+
+
 }

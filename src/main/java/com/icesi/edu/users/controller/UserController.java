@@ -6,7 +6,10 @@ import com.icesi.edu.users.dto.UserDTO;
 import com.icesi.edu.users.mapper.UserMapper;
 import com.icesi.edu.users.model.User;
 import com.icesi.edu.users.service.UserService;
+import com.icesi.edu.users.validation.CustomAnnotations.*;
 import lombok.AllArgsConstructor;
+import org.springframework.data.repository.query.Param;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
@@ -24,15 +27,15 @@ public class UserController implements UserAPI {
     public final UserMapper userMapper;
 
     @Override
-    public UserDTO getUser(UUID userId) {
-        return userMapper.fromUser(userService.getUser(userId));
+    @IsUser
+    public UserCreateDTO getUser(@Param("userId") UUID userId) {
+        return userMapper.fromUserWithPassword(userService.getUser(userId));
     }
 
     @Override
-    public UserDTO createUser(@Valid UserCreateDTO userDTO) {
+    public UserCreateDTO createUser(@Valid UserCreateDTO userDTO) {
         if (validUser(userDTO.getEmail(),userDTO.getPhoneNumber(),userDTO.getFirstName(),userDTO.getLastName())){
-            UserDTO usr =  userMapper.fromUser(userService.createUser(userMapper.fromDTO(userDTO)));
-            return usr;
+            return  userMapper.fromUserWithPassword(userService.createUser(userMapper.fromDTO(userDTO)));
         }
 
         throw new RuntimeException("Not a valid user");

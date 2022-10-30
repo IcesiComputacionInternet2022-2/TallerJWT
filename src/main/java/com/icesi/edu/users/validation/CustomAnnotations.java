@@ -1,5 +1,8 @@
 package com.icesi.edu.users.validation;
 
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
+
 import javax.validation.Constraint;
 import javax.validation.Payload;
 import java.lang.annotation.*;
@@ -50,4 +53,17 @@ public interface CustomAnnotations {
         Class<? extends Payload>[] payload() default {};
 
     }
+
+    @Target(ElementType.METHOD)
+    @Retention(RetentionPolicy.RUNTIME)
+    @PostAuthorize(value = "authentication.principal.username.equals(#userId) ")
+    @interface IsUser {
+        String message() default "UserID is invalid";
+
+        Class<?>[] groups() default {};
+
+        Class<? extends Payload>[] payload() default {};
+
+    }
+
 }
