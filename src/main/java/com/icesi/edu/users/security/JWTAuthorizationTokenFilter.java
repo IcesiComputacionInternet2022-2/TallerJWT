@@ -12,6 +12,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
@@ -42,18 +43,22 @@ public class JWTAuthorizationTokenFilter extends OncePerRequestFilter {
                 SecurityContext context = parseClaims(jwtToken, claims);
                 SecurityContextHolder.setUserContext(context);
                 filterChain.doFilter(request, response);
-            } else {
-                response.setStatus(HttpStatus.UNAUTHORIZED.value());
-                response.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
-                response.getWriter().write(ErrorConstants.ERR_1x02.getMessage());
-                response.getWriter().flush();
-//                throw new UserDemoException(HttpStatus.UNAUTHORIZED, new UserDemoError(ErrorConstants.ERR_1x02.name(), ErrorConstants.ERR_1x02.getMessage()));
-            }
+                if (request.getMethod().equals(RequestMethod.GET.name()) && !request.getRequestURI().contains(Claims.ID)) replyUnauth(response);
+
+            } else replyUnauth(response);
         } catch (JwtException e) {
             System.out.println("Error verifying JWTToken: " + e.getMessage());
         } finally {
             SecurityContextHolder.clearContext();
         }
+    }
+
+    @SneakyThrows
+    private void replyUnauth(HttpServletResponse response) {
+        response.setStatus(HttpStatus.UNAUTHORIZED.value());
+        response.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE);
+        response.getWriter().write(ErrorConstants.ERR_1x02.getMessage());
+        response.getWriter().flush();
     }
 
     private boolean containsToken(HttpServletRequest request) {
