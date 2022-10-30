@@ -1,6 +1,8 @@
 package com.icesi.edu.users.security;
 
 
+import com.icesi.edu.users.error.exception.UserDemoError;
+import com.icesi.edu.users.error.exception.UserDemoException;
 import com.icesi.edu.users.utils.JWTParser;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
@@ -9,6 +11,7 @@ import liquibase.util.StringUtil;
 import lombok.NonNull;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -68,6 +71,7 @@ public class JWTAuthorizationTokenFilter extends OncePerRequestFilter {
     private String claimKey(Claims claims, String key){
         String value = (String)claims.get(key);
         return Optional.ofNullable(value).orElseThrow();
+
     }
 
     @Override
