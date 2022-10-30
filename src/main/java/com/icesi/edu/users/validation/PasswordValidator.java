@@ -11,7 +11,7 @@ import javax.validation.ConstraintValidatorContext;
 
 public class PasswordValidator implements ConstraintValidator<CustomAnnotations.PasswordValidation, String> {
 
-    private final String REGEX =  "[A-Z]+[a-z]+[0-9]+[#$%@]+";
+    private final String REGEX =  "^(?=.*[A-Z]+)(?=.*[a-z]+)(?=.*[0-9]+)(?=.*[@#%$]+)[A-Za-z0-9#$%@]+$";
 
 
     @Override
