@@ -29,14 +29,13 @@ public class UserServiceImpl implements UserService {
         User user = userRepository.findById(userId).orElse(null);
         if(user != null){
            user.setLastTimeSearched(LocalDate.now());
-           System.out.println("Fecha: " + user.getLastTimeSearched());
+           userRepository.save(user);
         }
         return user;
     }
 
     @Override
     public User createUser(User userDTO) {
-        System.out.println("Service: " + userDTO.getHashedPassword());
         if(!repeatedPhoneOrEmail(userDTO.getEmail(),userDTO.getPhoneNumber()))
             return userRepository.save(userDTO);
         throw new UserException(HttpStatus.CONFLICT,  new UserError(UserErrorCode.CODE_06, UserErrorCode.CODE_06.getMessage()));

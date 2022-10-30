@@ -10,6 +10,7 @@ import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.MalformedJwtException;
 import liquibase.repackaged.org.apache.commons.lang3.StringUtils;
 import lombok.NonNull;
+import lombok.SneakyThrows;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -49,7 +50,11 @@ public class JWTAuthorizationTokenFilter extends OncePerRequestFilter {
                     Claims claims = JWTParser.decodeJWT(jwtToken);
                     SecurityContext context = parseClaims(jwtToken, claims);
                     SecurityContextHolder.setUserContext(context);
-                    filterChain.doFilter(request, response);
+
+                    if(getMyUserFilter(request, response)){
+                        filterChain.doFilter(request, response);
+                    }
+
                 }
                    else{
                     //Since this part it's executed before the handler exception, the program crashes, so i decided to establish the response by code.
@@ -57,7 +62,7 @@ public class JWTAuthorizationTokenFilter extends OncePerRequestFilter {
 //                  throw new UserException(HttpStatus.UNAUTHORIZED, new UserError(UserErrorCode.CODE_401, UserErrorCode.CODE_401.getMessage()));
                     response.setStatus(401);
                     response.setHeader(HttpHeaders.CONTENT_TYPE, APPLICATION_JSON_VALUE);
-                    response.getWriter().write(UserErrorCode.CODE_401.getMessage());
+                    response.getWriter().write(UserErrorCode.CODE_08.getMessage());
                     response.getWriter().flush();
                 }
 
@@ -91,6 +96,26 @@ public class JWTAuthorizationTokenFilter extends OncePerRequestFilter {
 
         return context;
     }
+
+    @SneakyThrows
+    private boolean getMyUserFilter(HttpServletRequest request, HttpServletResponse response) {
+        boolean authorized = true;
+        String method = request.getMethod();
+        String path = request.getRequestURI();
+
+        if (method.equals("GET") && path.startsWith("/users/") && !path.endsWith(SecurityContextHolder.getContext().getUserId().toString())) {
+            response.setStatus(401);
+            response.setHeader(HttpHeaders.CONTENT_TYPE, APPLICATION_JSON_VALUE);
+            response.getWriter().write(UserErrorCode.CODE_09.getMessage());
+            response.getWriter().flush();
+            authorized = false;
+        }
+
+        return authorized;
+    }
+
+
+
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request){

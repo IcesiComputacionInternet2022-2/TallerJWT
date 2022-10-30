@@ -21,7 +21,9 @@ public enum UserErrorCode {
 
     CODE_07("The password it's not the expected one. Try again"),
 
-    CODE_401("Unauthorized. Authentication needed to do this request.");
+
+    CODE_08("Unauthorized. In order to create new users you need to be logged."),
+    CODE_09("Unauthorized. Due to security reasons, you can only get the information of yourself");
 
     private final String message;
 }
