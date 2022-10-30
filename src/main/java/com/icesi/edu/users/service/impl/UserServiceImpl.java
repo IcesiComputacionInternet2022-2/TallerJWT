@@ -6,6 +6,7 @@ import com.icesi.edu.users.error.exception.UserException;
 import com.icesi.edu.users.model.User;
 import com.icesi.edu.users.repository.UserRepository;
 import com.icesi.edu.users.service.UserService;
+import com.icesi.edu.users.utils.JWTParser;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -36,8 +37,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User createUser(User userDTO) {
-        if(!repeatedPhoneOrEmail(userDTO.getEmail(),userDTO.getPhoneNumber()))
+        if(!repeatedPhoneOrEmail(userDTO.getEmail(),userDTO.getPhoneNumber())) {
             return userRepository.save(userDTO);
+        }
         throw new UserException(HttpStatus.CONFLICT,  new UserError(UserErrorCode.CODE_06, UserErrorCode.CODE_06.getMessage()));
     }
 

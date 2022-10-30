@@ -12,6 +12,6 @@ public class PasswordValidator implements ConstraintValidator<CustomAnnotations.
 
     @Override
     public boolean isValid(String str, ConstraintValidatorContext constraintValidatorContext) {
-        return Pattern.compile("(?=.*[a-z])(?=.*[A-Z])(?=.*[\\d])(?=.*[\\W])(?!.*[\\s])").matcher(str).find();
+        return Pattern.compile("(?=.*[a-z])(?=.*[A-Z])(?=.*[\\d])(?=.*[\\W])(?=.*[@#$%])").matcher(str).find();
     }
 }

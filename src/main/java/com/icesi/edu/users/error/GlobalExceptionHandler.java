@@ -52,7 +52,7 @@ public class GlobalExceptionHandler {
         String errorMsg = UserErrorCode.CODE_00.getMessage();
 
         switch (wrongField){
-            case "unhashedPassword":
+            case "password":
                 errorName = UserErrorCode.CODE_01;
                 errorMsg = UserErrorCode.CODE_01.getMessage();
                 break;

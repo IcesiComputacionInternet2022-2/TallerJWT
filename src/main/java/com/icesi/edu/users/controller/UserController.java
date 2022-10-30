@@ -2,10 +2,17 @@ package com.icesi.edu.users.controller;
 
 import com.google.common.hash.Hashing;
 import com.icesi.edu.users.api.UserAPI;
+import com.icesi.edu.users.constant.UserErrorCode;
 import com.icesi.edu.users.dto.UserDTO;
+import com.icesi.edu.users.dto.UserPublicDTO;
+import com.icesi.edu.users.error.exception.UserError;
+import com.icesi.edu.users.error.exception.UserException;
 import com.icesi.edu.users.mapper.UserMapper;
+import com.icesi.edu.users.model.User;
 import com.icesi.edu.users.service.UserService;
+import com.icesi.edu.users.utils.JWTParser;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
@@ -25,18 +32,22 @@ public class UserController implements UserAPI {
 
     @Override
     public UserDTO getUser(UUID userId) {
-        return userMapper.fromUser(userService.getUser(userId));
+        UserDTO user = userMapper.fromUser(userService.getUser(userId));
+        return user;
     }
 
     @Override
-    public UserDTO createUser(UserDTO userDTO) {
-        userDTO.setPassword(Hashing.sha256().hashString(userDTO.getPassword(), StandardCharsets.UTF_8).toString());
-        return userMapper.fromUser(userService.createUser(userMapper.fromDTO(userDTO)));
+    public UserDTO createUser(@Valid UserDTO userDTO) {
+        if(hasAtLeastOneContactWay(userDTO.getEmail(), userDTO.getPhoneNumber())){
+            userDTO.setPassword(Hashing.sha256().hashString(userDTO.getPassword(), StandardCharsets.UTF_8).toString());
+            return userMapper.fromUser(userService.createUser(userMapper.fromDTO(userDTO)));
+        }
+        throw new UserException(HttpStatus.BAD_REQUEST, new UserError(UserErrorCode.CODE_10, UserErrorCode.CODE_10.getMessage()));
     }
 
     @Override
-    public List<UserDTO> getUsers() {
-        return userService.getUsers().stream().map(userMapper::fromUser).collect(Collectors.toList());
+    public List<UserPublicDTO> getUsers() {
+        return userService.getUsers().stream().map(userMapper::fromPublicUser).collect(Collectors.toList());
     }
 
 

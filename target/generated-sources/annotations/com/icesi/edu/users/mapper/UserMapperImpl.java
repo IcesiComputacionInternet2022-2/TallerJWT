@@ -1,14 +1,14 @@
 package com.icesi.edu.users.mapper;
 
-import com.icesi.edu.users.dto.UserCreateDTO;
 import com.icesi.edu.users.dto.UserDTO;
+import com.icesi.edu.users.dto.UserPublicDTO;
 import com.icesi.edu.users.model.User;
 import javax.annotation.processing.Generated;
 import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2022-10-29T21:24:59-0500",
+    date = "2022-10-30T10:18:47-0500",
     comments = "version: 1.5.2.Final, compiler: javac, environment: Java 18.0.2 (Amazon.com Inc.)"
 )
 @Component
@@ -41,6 +41,7 @@ public class UserMapperImpl implements UserMapper {
 
         UserDTO userDTO = new UserDTO();
 
+        userDTO.setPassword( user.getHashedPassword() );
         userDTO.setId( user.getId() );
         userDTO.setEmail( user.getEmail() );
         userDTO.setPhoneNumber( user.getPhoneNumber() );
@@ -52,19 +53,20 @@ public class UserMapperImpl implements UserMapper {
     }
 
     @Override
-    public User fromDTO(UserCreateDTO userCreateDTO) {
-        if ( userCreateDTO == null ) {
+    public UserPublicDTO fromPublicUser(User user) {
+        if ( user == null ) {
             return null;
         }
 
-        User.UserBuilder user = User.builder();
+        UserPublicDTO userPublicDTO = new UserPublicDTO();
 
-        user.id( userCreateDTO.getId() );
-        user.email( userCreateDTO.getEmail() );
-        user.phoneNumber( userCreateDTO.getPhoneNumber() );
-        user.firstName( userCreateDTO.getFirstName() );
-        user.lastName( userCreateDTO.getLastName() );
+        userPublicDTO.setId( user.getId() );
+        userPublicDTO.setEmail( user.getEmail() );
+        userPublicDTO.setPhoneNumber( user.getPhoneNumber() );
+        userPublicDTO.setFirstName( user.getFirstName() );
+        userPublicDTO.setLastName( user.getLastName() );
+        userPublicDTO.setLastTimeSearched( user.getLastTimeSearched() );
 
-        return user.build();
+        return userPublicDTO;
     }
 }
