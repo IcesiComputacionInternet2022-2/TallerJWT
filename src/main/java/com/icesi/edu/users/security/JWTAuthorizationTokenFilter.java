@@ -9,6 +9,7 @@ import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.MalformedJwtException;
 import liquibase.repackaged.org.apache.commons.lang3.StringUtils;
+import lombok.NonNull;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -33,16 +34,18 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @Order(1)
 public class JWTAuthorizationTokenFilter extends OncePerRequestFilter {
 
-    private static final String AUTHORIZATION_HEADER = "Authentication";
-    private static final String TOKEN_PREFIX = "Bearer";
+    private static final String AUTHORIZATION_HEADER = "Authorization";
+    private static final String TOKEN_PREFIX = "Bearer ";
     private static final String USER_ID_CLAIM_NAME = "userId";
     private static final String[] EXCLUDE_PATHS = {"POST /login"};
 
     @Override
     public void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-            try {
+
+        try {
+
                 if(containsToken(request)){
-                    String jwtToken = request.getHeader(AUTHORIZATION_HEADER.replace(TOKEN_PREFIX, StringUtils.EMPTY));
+                    String jwtToken = request.getHeader(AUTHORIZATION_HEADER).replace(TOKEN_PREFIX, StringUtils.EMPTY);
                     Claims claims = JWTParser.decodeJWT(jwtToken);
                     SecurityContext context = parseClaims(jwtToken, claims);
                     SecurityContextHolder.setUserContext(context);
@@ -60,7 +63,6 @@ public class JWTAuthorizationTokenFilter extends OncePerRequestFilter {
 
 
             } catch ( JwtException e){
-                System.out.println(e.getClass());
                 System.out.println("Error verifying jwt token: " + e.getMessage());
             } finally {
                 SecurityContextHolder.clearContext();

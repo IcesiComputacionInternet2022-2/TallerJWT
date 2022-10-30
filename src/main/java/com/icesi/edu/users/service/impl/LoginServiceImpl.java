@@ -26,6 +26,7 @@ import java.util.stream.StreamSupport;
 public class LoginServiceImpl implements LoginService {
 
     public final UserRepository repository;
+    private final static long EXPIRATION_TOKEN_TIME = 1000000L;
     @Override
     public TokenDTO login(LoginDTO loginDTO) {
         User user = StreamSupport.stream(repository.findAll().spliterator(), false)
@@ -40,11 +41,10 @@ public class LoginServiceImpl implements LoginService {
     private TokenDTO authenticatePassword(User user, LoginDTO loginDTO) {
         String expectedHash = user.getHashedPassword();
         String requestHash  = Hashing.sha256().hashString(loginDTO.getPassword(), StandardCharsets.UTF_8).toString();
-        System.out.println(requestHash);
         if (requestHash.equals(expectedHash)) {
             Map<String, String> claims = new HashMap<>();
             claims.put("userId", user.getId().toString());
-            return new TokenDTO(JWTParser.createJWT(user.getId().toString(), user.getFirstName(), user.getLastName(), claims, 100000L));
+            return new TokenDTO(JWTParser.createJWT(user.getId().toString(), user.getFirstName(), user.getLastName(), claims, EXPIRATION_TOKEN_TIME));
         }
         throw new UserException(HttpStatus.ACCEPTED, new UserError(UserErrorCode.CODE_07, UserErrorCode.CODE_07.getMessage()));
     }
