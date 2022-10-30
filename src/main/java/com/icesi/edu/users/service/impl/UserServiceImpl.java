@@ -36,6 +36,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User createUser(User userDTO) {
+        System.out.println("Service: " + userDTO.getHashedPassword());
         if(!repeatedPhoneOrEmail(userDTO.getEmail(),userDTO.getPhoneNumber()))
             return userRepository.save(userDTO);
         throw new UserException(HttpStatus.CONFLICT,  new UserError(UserErrorCode.CODE_06, UserErrorCode.CODE_06.getMessage()));

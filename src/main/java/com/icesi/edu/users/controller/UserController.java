@@ -1,5 +1,6 @@
 package com.icesi.edu.users.controller;
 
+import com.google.common.hash.Hashing;
 import com.icesi.edu.users.api.UserAPI;
 import com.icesi.edu.users.dto.UserDTO;
 import com.icesi.edu.users.mapper.UserMapper;
@@ -8,6 +9,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.UUID;
 import java.util.regex.Matcher;
@@ -27,7 +29,8 @@ public class UserController implements UserAPI {
     }
 
     @Override
-    public UserDTO createUser( @Valid UserDTO userDTO) {
+    public UserDTO createUser(UserDTO userDTO) {
+        userDTO.setPassword(Hashing.sha256().hashString(userDTO.getPassword(), StandardCharsets.UTF_8).toString());
         return userMapper.fromUser(userService.createUser(userMapper.fromDTO(userDTO)));
     }
 

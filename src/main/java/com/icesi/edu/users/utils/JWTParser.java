@@ -13,7 +13,7 @@ import java.util.Map;
 
 public class JWTParser {
 
-    private static final String SECRET_KEY= "elTemaEsInteresantePorFavorSigueExplicandoProfe";
+    private static final String SECRET_KEY= "elTem@EsInteresantePorFavorSigueExplicandoPr0fe";
 
     public static String createJWT(String id, String issuer, String subject, Map<String, String> claims, long ttlMilis){
         SignatureAlgorithm algorithm = SignatureAlgorithm.HS256;

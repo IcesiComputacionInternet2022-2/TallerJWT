@@ -1,5 +1,6 @@
 package com.icesi.edu.users.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -34,17 +35,14 @@ public class User {
 
     private String lastName;
 
+    private String hashedPassword;
+
     private LocalDate lastTimeSearched;
 
-    private String unhashedPassword;
 
     @PrePersist
     public void generateId(){
         this.id = UUID.randomUUID();
     }
 
-
-    public String getHashed() {
-        return "";
-    }
 }

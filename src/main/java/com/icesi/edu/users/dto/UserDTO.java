@@ -1,14 +1,18 @@
 package com.icesi.edu.users.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.common.hash.Hashing;
 import com.icesi.edu.users.validation.CustomAnnotations;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.UniqueElements;
 
+import javax.persistence.Access;
 import javax.persistence.Column;
 import javax.persistence.UniqueConstraint;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.UUID;
 
@@ -35,7 +39,7 @@ public class UserDTO {
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @CustomAnnotations.PasswordValidation
-    private String unhashedPassword;
+    private String password;
 
     private LocalDate lastTimeSearched;
 

@@ -29,7 +29,7 @@ public class LoginServiceImpl implements LoginService {
     @Override
     public TokenDTO login(LoginDTO loginDTO) {
         User user = StreamSupport.stream(repository.findAll().spliterator(), false)
-                .filter(u -> u.getEmail().equals(loginDTO.getEmail()))
+                .filter(currentUser -> currentUser.getEmail().equals(loginDTO.getEmail()))
                 .findFirst()
                 .orElseThrow();
 
@@ -38,15 +38,14 @@ public class LoginServiceImpl implements LoginService {
 
     @SneakyThrows
     private TokenDTO authenticatePassword(User user, LoginDTO loginDTO) {
-        String expectedHash = user.getHashed();
-        String requestHash = Hashing.sha256().hashString(loginDTO.getPassword(), StandardCharsets.UTF_8).toString();
+        String expectedHash = user.getHashedPassword();
+        String requestHash  = Hashing.sha256().hashString(loginDTO.getPassword(), StandardCharsets.UTF_8).toString();
 
         if (requestHash.equals(expectedHash)) {
             Map<String, String> claims = new HashMap<>();
             claims.put("userId", user.getId().toString());
             return new TokenDTO(JWTParser.createJWT(user.getId().toString(), user.getFirstName(), user.getLastName(), claims, 100000L));
         }
-
-        throw new UserException(HttpStatus.NOT_ACCEPTABLE, new UserError(UserErrorCode.CODE_07, UserErrorCode.CODE_07.getMessage()));
+        throw new UserException(HttpStatus.ACCEPTED, new UserError(UserErrorCode.CODE_07, UserErrorCode.CODE_07.getMessage()));
     }
 }
