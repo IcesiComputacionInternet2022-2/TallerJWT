@@ -1,14 +1,18 @@
 package com.icesi.edu.users.service.impl;
 
 import com.google.common.hash.Hashing;
+import com.icesi.edu.users.constant.UserErrorCode;
 import com.icesi.edu.users.dto.LoginDTO;
 import com.icesi.edu.users.dto.TokenDTO;
+import com.icesi.edu.users.error.exception.UserError;
+import com.icesi.edu.users.error.exception.UserException;
 import com.icesi.edu.users.model.User;
 import com.icesi.edu.users.repository.UserRepository;
 import com.icesi.edu.users.service.LoginService;
 import com.icesi.edu.users.utils.JWTParser;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.nio.charset.StandardCharsets;
@@ -28,6 +32,7 @@ public class LoginServiceImpl implements LoginService {
                 .filter(u -> u.getEmail().equals(loginDTO.getEmail()))
                 .findFirst()
                 .orElseThrow();
+
         return authenticatePassword(user, loginDTO);
     }
 
@@ -42,6 +47,6 @@ public class LoginServiceImpl implements LoginService {
             return new TokenDTO(JWTParser.createJWT(user.getId().toString(), user.getFirstName(), user.getLastName(), claims, 100000L));
         }
 
-        throw new InvalidParameterException();
+        throw new UserException(HttpStatus.NOT_ACCEPTABLE, new UserError(UserErrorCode.CODE_07, UserErrorCode.CODE_07.getMessage()));
     }
 }

@@ -19,6 +19,8 @@ public enum UserErrorCode {
 
     CODE_06("The email and phone number are not repeatable fields. Try with another value"),
 
+    CODE_07("The password it's not the expected one. Try again"),
+
     CODE_401("Unauthorized. Authentication needed to do this request.");
 
     private final String message;
