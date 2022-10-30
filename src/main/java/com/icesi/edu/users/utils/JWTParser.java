@@ -15,7 +15,7 @@ public class JWTParser {
 
     private static final String SECRET_KEY= "elTemaEsInteresantePorFavorSigueExplicandoProfe";
 
-    public static String createJwt(String id, String issuer, String subject, Map<String, String> claims, long ttlMilis){
+    public static String createJWT(String id, String issuer, String subject, Map<String, String> claims, long ttlMilis){
         SignatureAlgorithm algorithm = SignatureAlgorithm.HS256;
         long nowMillis = System.currentTimeMillis();
         Date now = new Date(nowMillis);

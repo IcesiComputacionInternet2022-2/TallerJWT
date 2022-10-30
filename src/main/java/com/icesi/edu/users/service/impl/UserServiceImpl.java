@@ -1,9 +1,13 @@
 package com.icesi.edu.users.service.impl;
 
+import com.icesi.edu.users.constant.UserErrorCode;
+import com.icesi.edu.users.error.exception.UserError;
+import com.icesi.edu.users.error.exception.UserException;
 import com.icesi.edu.users.model.User;
 import com.icesi.edu.users.repository.UserRepository;
 import com.icesi.edu.users.service.UserService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.validation.Valid;
@@ -32,9 +36,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User createUser(User userDTO) {
-        if(!repitedPhoneOrEmail(userDTO.getEmail(),userDTO.getPhoneNumber()))
+        if(!repeatedPhoneOrEmail(userDTO.getEmail(),userDTO.getPhoneNumber()))
             return userRepository.save(userDTO);
-        throw new RuntimeException("RepitedPhoneOrEmail");
+        throw new UserException(HttpStatus.CONFLICT,  new UserError(UserErrorCode.CODE_06, UserErrorCode.CODE_06.getMessage()));
     }
 
     @Override
@@ -42,7 +46,7 @@ public class UserServiceImpl implements UserService {
         return StreamSupport.stream(userRepository.findAll().spliterator(),false).collect(Collectors.toList());
     }
 
-    public boolean repitedPhoneOrEmail(String email, String number){
+    public boolean repeatedPhoneOrEmail(String email, String number){
         List<User> allUsers = getUsers();
         boolean duplicatedData = false;
 

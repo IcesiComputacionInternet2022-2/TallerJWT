@@ -44,4 +44,7 @@ public class User {
     }
 
 
+    public String getHashed() {
+        return "";
+    }
 }

@@ -14,7 +14,10 @@ public enum UserErrorCode {
     CODE_02("The email doesn't belong to the expected domain."),
     CODE_03("The phone doesn't follows the expected pattern."),
     CODE_04("The name can take only letters."),
+
     CODE_05("The last name can take only letters."),
+
+    CODE_06("The email and phone number are not repeatable fields. Try with another value"),
 
     CODE_401("Unauthorized. Authentication needed to do this request.");
 
