@@ -1,6 +1,5 @@
 package com.icesi.edu.users.dto;
 
-import com.icesi.edu.users.validation.CustomAnnotations.PasswordValidation;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import java.time.LocalDate;
@@ -8,14 +7,11 @@ import java.util.UUID;
 
 @Data
 @AllArgsConstructor
-public class UserDTO {
+public class UserWithoutPasswordDTO {
 
     private UUID id;
 
     private String email;
-
-    @PasswordValidation
-    private String password;
 
     private String phoneNumber;
 
@@ -25,7 +21,7 @@ public class UserDTO {
 
     private String callDate;
 
-    public UserDTO() {
+    public UserWithoutPasswordDTO() {
         callDate = String.valueOf(LocalDate.now());
     }
 }

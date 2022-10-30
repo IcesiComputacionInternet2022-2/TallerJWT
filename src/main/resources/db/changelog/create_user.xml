@@ -1,19 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
 
     <!-- Refer to https://docs.liquibase.com/change-types/community/create-table.html -->
 
     <changeSet id="33d4e9bc-7210-47c3-9617-c56ab7c0750d" author="juan.prada" failOnError="true">
-
         <createTable tableName="user">
             <column name="id" type="UUID">
                 <constraints nullable="false" primaryKey="true" />
             </column>
             <column name="email" type="varchar(255)" />
+            <column name="password" type="varchar(255)" />
             <column name="phone_number" type="varchar(255)" />
             <column name="first_name" type="varchar(255)" />
             <column name="last_name" type="varchar(255)" />
         </createTable>
+        <insert tableName="user">
+            <column name="id" value="724f2a12-cad4-4e65-8846-9dd94df19369"/>
+            <column name="email" value="juanescaicedo@icesi.edu.co"/>
+            <column name="password" value="Ju@nes1234"/>
+            <column name="phone_number" value="+573107552187"/>
+            <column name="first_name" value="Juan"/>
+            <column name="last_name" value="Caicedo"/>
+        </insert>
     </changeSet>
 </databaseChangeLog>
