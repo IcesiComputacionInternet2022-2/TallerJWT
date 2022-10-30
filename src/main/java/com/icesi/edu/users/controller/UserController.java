@@ -29,7 +29,6 @@ public class UserController implements UserAPI {
 
     @Override
     public UserDTO createUser(@Valid UserDTO userDTO) {
-        String email = userDTO.getEmail(), phone = userDTO.getPhoneNumber();
         userDTO.setPassword(Hashing.sha256().hashString(userDTO.getPassword(), StandardCharsets.UTF_8).toString());
         return userMapper.fromUser(userService.createUser(userMapper.fromDTO(userDTO)));
     }

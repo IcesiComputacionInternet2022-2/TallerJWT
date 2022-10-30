@@ -14,7 +14,8 @@
             <column name="phone_number" type="varchar(255)" />
             <column name="first_name" type="varchar(255)" />
             <column name="last_name" type="varchar(255)" />
-            <column name="hash" type="varchar(255)" />
+            <column name="hashed" type="varchar(255)" />
+            <column name="modified_time" type="varchar(255)"/>
         </createTable>
     </changeSet>
 </databaseChangeLog>

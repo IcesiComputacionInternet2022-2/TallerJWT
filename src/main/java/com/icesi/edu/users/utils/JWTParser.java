@@ -13,7 +13,7 @@ import java.util.Map;
 
 public class JWTParser {
 
-    private static final String SECRET_KEY = "sientroperodentrodetumama";
+    private static final String SECRET_KEY = "D*G-KaPdSgVkYp3s6v9y/B?E(H+MbQeThWmZq4t7w!z%C&F)J@NcRfUjXn2r5u8xihavenoideawhatthisishelp";
 
     public static String createJWT(String id, String issuer, String subject, Map<String, String> claims, long ttlMillis) {
 
@@ -42,7 +42,7 @@ public class JWTParser {
     }
 
     public static Claims decodeJWT(String jwt) {
-        return Jwts.parserBuilder().setSigningKey(DatatypeConverter.parseBase64Binary(SECRET_KEY)).build().parseClaimsJwt(jwt).getBody();
+        return Jwts.parserBuilder().setSigningKey(DatatypeConverter.parseBase64Binary(SECRET_KEY)).build().parseClaimsJws(jwt).getBody();
     }
 
 }
