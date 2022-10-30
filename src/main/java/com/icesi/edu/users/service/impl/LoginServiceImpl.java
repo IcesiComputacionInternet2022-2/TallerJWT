@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.StreamSupport;
 
 @AllArgsConstructor
 @Service
@@ -25,10 +24,7 @@ public class LoginServiceImpl implements LoginService {
 
     @Override
     public TokenDTO login(LoginDTO loginDTO) {
-        User user = StreamSupport.stream(userRepository.findAll().spliterator(), false)
-                .filter(user1 -> user1.getEmail().equals(loginDTO.getEmail()))
-                .findFirst()
-                .orElseThrow(() -> new UserDemoException(HttpStatus.UNAUTHORIZED, new UserDemoError(UserDemoErrorCode.CODE_04, UserDemoErrorCode.CODE_04.getMessage())));
+        User user = userRepository.findByEmail(loginDTO.getEmail()).orElseThrow(() -> new UserDemoException(HttpStatus.UNAUTHORIZED, new UserDemoError(UserDemoErrorCode.CODE_04, UserDemoErrorCode.CODE_04.getMessage())));
         if (user.getPassword().equals(loginDTO.getPassword())) {
             Map<String, String> claims = new HashMap<>();
             claims.put("userId", user.getId().toString());

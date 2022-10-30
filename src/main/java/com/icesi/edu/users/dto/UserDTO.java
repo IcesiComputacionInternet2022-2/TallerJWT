@@ -10,7 +10,6 @@ import java.util.UUID;
 
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
 public class UserDTO {
 
     private UUID id;
@@ -23,7 +22,13 @@ public class UserDTO {
 
     private String lastName;
 
+    private String timeStamp;
+
     @NotNull
     @PasswordValidation
     private String password;
+
+    public UserDTO() {
+        timeStamp = java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+    }
 }

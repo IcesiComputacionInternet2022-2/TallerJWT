@@ -1,12 +1,17 @@
 package com.icesi.edu.users.service.impl;
 
+import com.icesi.edu.users.constant.UserDemoErrorCode;
+import com.icesi.edu.users.error.exception.UserDemoError;
+import com.icesi.edu.users.error.exception.UserDemoException;
 import com.icesi.edu.users.model.User;
 import com.icesi.edu.users.repository.UserRepository;
 import com.icesi.edu.users.service.UserService;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -24,7 +29,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User createUser(User userDTO) {
-        validateRepeatedEmailOrPhoneNumber(userDTO.getEmail(), userDTO.getPhoneNumber());
+        validateRepeatedEmailOrPhoneNumber(Optional.ofNullable(userDTO.getEmail()), Optional.ofNullable(userDTO.getPhoneNumber()));
         return userRepository.save(userDTO);
     }
 
@@ -39,17 +44,21 @@ public class UserServiceImpl implements UserService {
     }
 
 
-    private void validateRepeatedEmailOrPhoneNumber(String email, String phoneNumber) {
+    private void validateRepeatedEmailOrPhoneNumber(Optional<String> email, Optional<String> phoneNumber) {
 
         List<User> listUsers = StreamSupport.stream(userRepository.findAll().spliterator(),false).collect(Collectors.toList());
 
         listUsers.forEach(user-> {
-            if(user.getEmail()!=null&&user.getEmail().equals(email)){
-                throw new RuntimeException("The email is already in use");
-            }
-            if(user.getPhoneNumber()!=null&&user.getPhoneNumber().equals(phoneNumber)){
-                throw new RuntimeException("The phone number is already in use");
-            }
+            email.ifPresent(e -> {
+                if (e.equals(user.getEmail())) {
+                    throw new UserDemoException(HttpStatus.BAD_REQUEST,new UserDemoError(UserDemoErrorCode.CODE_12, UserDemoErrorCode.CODE_12.getMessage()));
+                }
+            });
+            phoneNumber.ifPresent(p -> {
+                if (p.equals(user.getPhoneNumber())) {
+                    throw new UserDemoException(HttpStatus.BAD_REQUEST,new UserDemoError(UserDemoErrorCode.CODE_13, UserDemoErrorCode.CODE_13.getMessage()));
+                }
+            });
         });
     }
 }

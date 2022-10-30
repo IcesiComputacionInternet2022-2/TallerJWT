@@ -17,7 +17,9 @@ public enum UserDemoErrorCode {
     CODE_08("The phone number is not valid"),
     CODE_09("Either email or phone number must be present"),
     CODE_10("The firstname and the lastname should not have more than 120 characters"),
-    CODE_11("The firstname and the lastname should not have special characters or numbers");
+    CODE_11("The firstname and the lastname should not have special characters or numbers"),
+    CODE_12("The email is already in use"),
+    CODE_13("The phone number is already in use");
 
     private final String message;
 }

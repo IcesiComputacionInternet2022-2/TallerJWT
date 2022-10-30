@@ -1,6 +1,7 @@
 package com.icesi.edu.users.security;
 
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
@@ -9,6 +10,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Setter
+@Getter
 @EqualsAndHashCode
 @ToString
 public class SecurityContext implements Serializable {
@@ -19,21 +21,5 @@ public class SecurityContext implements Serializable {
     private UUID roleId;
     private UUID organizationId;
     private String token;
-
-    public UUID getUserId() {
-        return Optional.ofNullable(userId).orElseThrow();
-    }
-
-    public UUID getRoleId() {
-        return Optional.ofNullable(roleId).orElseThrow();
-    }
-
-    public UUID getOrganizationId() {
-        return organizationId;
-    }
-
-    public String getToken() {
-        return token;
-    }
 
 }

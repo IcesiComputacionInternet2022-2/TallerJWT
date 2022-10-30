@@ -9,7 +9,7 @@ public class PasswordValidator implements ConstraintValidator<CustomAnnotations.
     public boolean isValid(String s, ConstraintValidatorContext constraintValidatorContext) {
 
         //Regex for one upper case letter, one lower case letter, one number and one special character.
-        String regex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]+$";
+        String regex = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[#$%@])[A-Za-z\\d#$%@]+$";
         return s.matches(regex);
     }
 }

@@ -53,13 +53,15 @@ public class JWTAuthorizationTokenFilter extends OncePerRequestFilter {
                 Claims claims = JWTParser.decodeJWT(jwtToken);
                 SecurityContext context = parseClaims(jwtToken, claims);
                 SecurityContextHolder.setUserContext(context);
-                if(getUserFilter(request, response))
-                    filterChain.doFilter(request, response);
+                getUserFilter(request, response);
+                filterChain.doFilter(request, response);
             } else {
                 createUnauthorizedFilter(new UserDemoException(HttpStatus.UNAUTHORIZED, new UserDemoError(UserDemoErrorCode.CODE_01, UserDemoErrorCode.CODE_01.getMessage())), response);
             }
         } catch (JwtException e) {
             createUnauthorizedFilter(new UserDemoException(HttpStatus.UNAUTHORIZED, new UserDemoError(UserDemoErrorCode.CODE_01, UserDemoErrorCode.CODE_01.getMessage())), response);
+        } catch (UserDemoException e) {
+            createUnauthorizedFilter(e, response);
         } finally {
             SecurityContextHolder.clearContext();
         }
@@ -89,17 +91,13 @@ public class JWTAuthorizationTokenFilter extends OncePerRequestFilter {
         return Arrays.stream(excludedPaths).anyMatch(path -> path.equalsIgnoreCase(methodPlusPath));
     }
 
-    protected boolean getUserFilter(HttpServletRequest req, HttpServletResponse res) {
-        boolean authorized = true;
+    protected void getUserFilter(HttpServletRequest req, HttpServletResponse res) {
         String method = req.getMethod();
         String path = req.getRequestURI();
 
         if (method.equals("GET") && path.startsWith("/users/") && !path.endsWith(SecurityContextHolder.getContext().getUserId().toString())) {
-            createUnauthorizedFilter(new UserDemoException(HttpStatus.UNAUTHORIZED, new UserDemoError(UserDemoErrorCode.CODE_02, UserDemoErrorCode.CODE_02.getMessage())), res);
-            authorized = false;
+            throw new UserDemoException(HttpStatus.UNAUTHORIZED, new UserDemoError(UserDemoErrorCode.CODE_02, UserDemoErrorCode.CODE_02.getMessage()));
         }
-
-        return authorized;
     }
 
     private boolean containsToken(HttpServletRequest request) {
