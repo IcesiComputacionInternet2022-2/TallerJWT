@@ -1,96 +1,116 @@
-package com.icesi.edu.users.Service;
+package com.icesi.edu.users.service;
 
 import com.icesi.edu.users.model.User;
 import com.icesi.edu.users.repository.UserRepository;
-import com.icesi.edu.users.service.UserService;
+import com.icesi.edu.users.security.SecurityContext;
+import com.icesi.edu.users.security.SecurityContextHolder;
 import com.icesi.edu.users.service.impl.UserServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 public class UserServiceTest {
+	
+	private final static UUID ID = UUID.fromString("94cd0d26-79b6-44ef-acc7-58792bd9b3a6");
+	private final static String EMAIL = "carlosjpantoja@icesi.edu.co";
+	private final static String PHONE = "+573135965423";
+	private final static String FNAME = "Carlos";
+	private final static String LNAME = "Pantoja";
 
     private UserService userService;
     private UserRepository userRepository;
-    private User user;
-    private UUID uuid;
 
     @BeforeEach
-    private void init() {
+	public void init(){
         userRepository = mock(UserRepository.class);
         userService = new UserServiceImpl(userRepository);
     }
 
-    private void setupScene1() {
-        uuid = UUID.randomUUID();
-        String email = "juandavid227@icesi.edu.co";
-        String phoneNumber = "+573166670887";
-        String firstName = "Juan";
-        String lastName = "Cruz";
-
-        user = new User(uuid, email, phoneNumber, firstName, lastName);
-    }
+	@Test
+	public void testGetUser() {
+		User baseUser = baseUser();
+		when(userRepository.findById(baseUser.getId())).thenReturn(Optional.of(baseUser));
+		SecurityContextHolder.getContext().setUserId(baseUser.getId());
+		User userResult = userService.getUser(baseUser.getId());
+		verify(userRepository, times(1)).findById(baseUser.getId());
+		assertNotNull(userResult);
+		assertEquals(userResult.getId(), ID);
+		assertEquals(userResult.getEmail(), EMAIL);
+		assertEquals(userResult.getPhoneNumber(), PHONE);
+		assertEquals(userResult.getFirstName(), FNAME);
+		assertEquals(userResult.getLastName(), LNAME);
+	}
 
     @Test
     public void testCreateUser() {
-        setupScene1();
-        when(userRepository.save(any())).thenReturn(new User());
-        User createdUser = userService.createUser(user);
-        assertNotNull(createdUser); //User is not null
-        verify(userRepository, times(1)).save(any()); //Save is being called
+    	User baseUser = baseUser();
+    	when(userRepository.save(any())).thenReturn(baseUser);
+    	User userResult = userService.createUser(baseUser);
+    	verify(userRepository, times(1)).save(any());
+    	assertNotNull(userResult);
+    	assertEquals(userResult.getId(), ID);
+    	assertEquals(userResult.getEmail(), EMAIL);
+    	assertEquals(userResult.getPhoneNumber(), PHONE);
+    	assertEquals(userResult.getFirstName(), FNAME);
+    	assertEquals(userResult.getLastName(), LNAME);
     }
-
+    
     @Test
-    public void testGetUser() {
-        setupScene1();
-        userService.createUser(user);
-        User obtainedUser = userService.getUser(uuid);
-        verify(userRepository, times(1)).findById(any()); //Save is being called
-    }
-
+	public void testCreateUserWithRepeatEmail() {
+		try {
+			User baseUser = baseUser();
+			when(userRepository.findByEmail(any())).thenReturn(Optional.of(baseUser));
+			userService.createUser(baseUser);
+			fail();
+		} catch (RuntimeException e) {
+			verify(userRepository, times(1)).findByEmail(any());
+		}
+	}
+    
     @Test
-    public void testGetUsers() {
-        //First User
-        setupScene1();
-        //Second User
-        UUID uuid2 = UUID.randomUUID();
-        String email2 = "prueba@icesi.edu.co";
-        String phoneNumber2 = "+573207828580";
-        String firstName2 = "Liliana";
-        String lastName2 = "Garcia";
+	public void testCreateUserWithRepeatPhoneNumber() {
+		try {
+			User baseUser = baseUser();
+			when(userRepository.findByPhoneNumber(any())).thenReturn(Optional.of(baseUser));
+			userService.createUser(baseUser);
+			fail();
+		} catch (RuntimeException e) {
+			verify(userRepository, times(1)).findByPhoneNumber(any());
+		}
+	}
 
-        //Create User
-        User user2 = new User(uuid2, email2, phoneNumber2, firstName2, lastName2);
-        userService.createUser(user);
-        userService.createUser(user2);
-        userService.getUsers();
-        verify(userRepository, times(3)).findAll(); //It's called 3 times because createUser calls getUsers
-    }
-
-    @Test
-    public void testNonRepeatedEmailOrNumber() {
-        setupScene1();
-        List<User> users = new ArrayList<>();
-
-        //Create User
-        when(userRepository.save(any())).thenReturn(user);
-        User createdUser = userService.createUser(user);
-        users.add(createdUser);
-        when(userService.getUsers()).thenReturn(users);
-        try {  //have to use "try catch" because if I don't, test doesn't run.
-            userService.createUser(user);
-        } catch (Exception e) {
-            //System.out.println("Entre"); Fuerza bruta para ver si entraba (si lo hace jaja)
-            verify(userRepository, times(1)).save(any());
-        }
-    }
-
-
+	@Test
+	public void testGetUsers() {
+		User baseUser = baseUser();
+		when(userRepository.findAll()).thenReturn(List.of(baseUser));
+		List<User> userResult = userService.getUsers();
+		verify(userRepository, times(1)).findAll();
+		assertNotNull(userResult.get(0));
+		assertEquals(userResult.get(0).getId(), ID);
+		assertEquals(userResult.get(0).getEmail(), EMAIL);
+		assertEquals(userResult.get(0).getPhoneNumber(), PHONE);
+		assertEquals(userResult.get(0).getFirstName(), FNAME);
+		assertEquals(userResult.get(0).getLastName(), LNAME);
+	}
+    
+    private User baseUser() {
+		return User.builder()
+						.id(ID)
+						.email(EMAIL)
+						.phoneNumber(PHONE)
+						.firstName(FNAME)
+						.lastName(LNAME)
+						.build();
+	}
+    
 }

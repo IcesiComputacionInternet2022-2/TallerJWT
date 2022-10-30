@@ -3,9 +3,11 @@ package com.icesi.edu.users.error.exception;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-@AllArgsConstructor
 @Data
-public class UserDemoError {
+@AllArgsConstructor
+public class UserError {
+
     private String code;
     private String message;
+
 }

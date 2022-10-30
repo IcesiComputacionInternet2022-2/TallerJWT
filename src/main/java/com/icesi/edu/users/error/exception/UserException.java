@@ -2,11 +2,17 @@ package com.icesi.edu.users.error.exception;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import org.springframework.http.HttpStatus;
 
-@AllArgsConstructor
 @Getter
-public class UserDemoException extends RuntimeException{
+@Setter
+@AllArgsConstructor
+public class UserException extends RuntimeException {
+
+    private static final long serialVersionUID = 1L;
+
     private HttpStatus httpStatus;
-    private UserDemoError error;
+    private UserError error;
+
 }
