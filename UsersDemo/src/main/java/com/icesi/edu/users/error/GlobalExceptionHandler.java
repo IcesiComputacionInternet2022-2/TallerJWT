@@ -1,5 +1,6 @@
 package com.icesi.edu.users.error;
 
+import com.icesi.edu.users.constant.UserDemoErrorCode;
 import com.icesi.edu.users.error.exception.UserDemoError;
 import com.icesi.edu.users.error.exception.UserDemoException;
 import org.springframework.http.HttpStatus;
@@ -19,6 +20,13 @@ public class GlobalExceptionHandler {
     public ResponseEntity<UserDemoError> handleException(UserDemoException userDemoException){
         return new ResponseEntity<>(userDemoException.getError(), userDemoException.getHttpStatus());
     }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<UserDemoError> handleInvalidArgumentAnnotation(MethodArgumentNotValidException exception){
+        UserDemoException userDemoException = new UserDemoException(HttpStatus.BAD_REQUEST, new UserDemoError(UserDemoErrorCode.CODE_UD_10, UserDemoErrorCode.CODE_UD_10.getMessage()));
+        return new ResponseEntity<>(userDemoException.getError(), userDemoException.getHttpStatus());
+    }
+
 
     /*
     @ResponseStatus(HttpStatus.BAD_REQUEST)

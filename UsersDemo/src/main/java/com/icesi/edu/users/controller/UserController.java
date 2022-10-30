@@ -32,10 +32,10 @@ public class UserController implements UserAPI {
     }
 
     @Override
-    public UserDTO createUser(@Valid UserCreateDTO userCreateDTO) throws RuntimeException {
+    public UserCreateDTO createUser(@Valid UserCreateDTO userCreateDTO) throws RuntimeException {
         boolean isValidUser = validateUser(userCreateDTO);
         if(isValidUser){
-            return userMapper.fromUser(userService.createUser(userMapper.fromCreateDTO(userCreateDTO)));
+            return userMapper.fromUserToCreateDTO(userService.createUser(userMapper.fromCreateDTO(userCreateDTO)));
         }else{
             throw new UserDemoException(HttpStatus.BAD_REQUEST, new UserDemoError(UserDemoErrorCode.CODE_UD_01, UserDemoErrorCode.CODE_UD_01.getMessage()));
         }

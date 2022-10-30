@@ -20,7 +20,7 @@ public interface UserAPI {
     public UserDTORequest getUser(@PathVariable UUID userId);
 
     @PostMapping()
-    public UserDTO createUser(@RequestBody @Valid UserCreateDTO userDTO);
+    public UserCreateDTO createUser(@RequestBody @Valid UserCreateDTO userDTO);
 
     @GetMapping
     public List<UserDTO> getUsers();
