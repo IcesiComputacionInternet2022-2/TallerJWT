@@ -19,7 +19,7 @@ public class UserControllerTest {
     private UserController userController;
     private UserService userService;
     private UserMapper userMapper;
-    private UserCreateDTO userDTO;
+    private UserDTO userDTO;
     private UUID uuid;
 
     @BeforeEach
@@ -36,7 +36,11 @@ public class UserControllerTest {
         String firstName = "Juan";
         String lastName = "Cruz";
         String password  = "Si";
-        userDTO = new UserCreateDTO(uuid,email,phoneNumber,firstName,lastName,password);
+        userDTO = new UserCreateDTO(password);
+        userDTO.setPhoneNumber(phoneNumber);
+        userDTO.setEmail(email);
+        userDTO.setFirstName(firstName);
+        userDTO.setLastName(lastName);
     }
 
     @Test
@@ -61,7 +65,7 @@ public class UserControllerTest {
     private boolean createGeneratesException(){
         when(userMapper.fromUser(any())).thenReturn(userDTO);
         try {
-            userController.createUser(userDTO);
+            userController.createUser((UserCreateDTO) userDTO);
         }
         catch (Exception e){
             return true;
