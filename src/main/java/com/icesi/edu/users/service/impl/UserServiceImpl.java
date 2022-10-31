@@ -6,7 +6,6 @@ import com.icesi.edu.users.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -21,34 +20,46 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User getUser(UUID userId) {
-        return userRepository.findById(userId).orElse(null);
+        User userCalled = userRepository.findById(userId).orElse(null);
+        this.setDate(userCalled);
+        return userCalled;
     }
 
     @Override
     public User createUser(User userDTO) {
-        if(!isRepeated(userDTO.getEmail(),userDTO.getPhoneNumber())){
+        emailOrPhoneNumber(userDTO);
+        uniquePhoneNumber(userDTO);
+        stringNotToLong(userDTO.getFirstName());
+        stringNotToLong(userDTO.getLastName());
             return userRepository.save(userDTO);
-        }
-        throw new RuntimeException("Repeated email or phoneNumber");
     }
 
     @Override
     public List<User> getUsers() {
-        List<User> listUsers = StreamSupport.stream(userRepository.findAll().spliterator(),false).collect(Collectors.toList());
-        return listUsers.stream().peek(user ->{
-            String ID = user.getId().toString();
-            String newID = ID.substring(ID.length()-4);
-            user.setId(UUID.fromString("00000000-0000-0000-0000-00000000"+newID));
-        }).collect(Collectors.toList());
+        return StreamSupport.stream(userRepository.findAll().spliterator(),false).collect(Collectors.toList());
     }
 
-    private boolean isRepeated(String email,String number){
-        List<User> users = getUsers();
-        for (User x : users){
-            if (x.getPhoneNumber().equals(number) || x.getEmail().equals(email)){
-                return true;
+    private void emailOrPhoneNumber(User userDTO) {
+        if(userDTO.getEmail()==null && userDTO.getPhoneNumber()==null){
+            throw new RuntimeException("El correo y el numero de telefono no pueden ser vacios por favor llene uno de los dos");
+        }
+    }
+    private void stringNotToLong(String s) {
+        if(s ==null || s.length()>120)
+            throw new RuntimeException("El Nombre y Apellido no pueden estar en blanco y maximo pueden tener 120 caracteres");
+    }
+
+    private void setDate(User userDTO) {
+        Date date = new Date();
+        userDTO.setDate(date);
+    }
+
+    private void uniquePhoneNumber(User userDTO) {
+        List<User> x = this.getUsers();
+        for(User y: x) {
+            if (y.getPhoneNumber() == userDTO.getPhoneNumber()) {
+                throw new RuntimeException("El numero de telefono ya esta registrado para otro usuario en la base de datos");
             }
         }
-        return false;
     }
 }

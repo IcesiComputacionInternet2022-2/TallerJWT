@@ -28,16 +28,8 @@ public class UserDTO {
     @Size(min = 1, max = 120, message = "Last name can't be longer than 120 chars")
     private String lastName;
 
-    @Pattern(regexp = "[a-zA-Z0-9#$%@]*")
+    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[#$%@])[A-Za-z\\d#$%@]+$")
     private String password;
-    private String date;
 
-    public UserDTO(UUID uuid, String email, String phoneNumber, String firstName, String lastName) {
-        this.id = uuid;
-        this.email = email;
-        this.phoneNumber = phoneNumber;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        date = "Not yet consulted";
-    }
+    private Date date;
 }
