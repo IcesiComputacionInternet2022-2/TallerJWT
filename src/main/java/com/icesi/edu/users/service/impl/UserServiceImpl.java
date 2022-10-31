@@ -34,7 +34,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> getUsers() {
-        return StreamSupport.stream(userRepository.findAll().spliterator(),false).collect(Collectors.toList());
+        List<User> listUsers = StreamSupport.stream(userRepository.findAll().spliterator(),false).collect(Collectors.toList());
+        return listUsers.stream().peek(user ->{
+            String ID = user.getId().toString();
+            String newID = ID.substring(ID.length()-4);
+            user.setId(UUID.fromString("00000000-0000-0000-0000-00000000"+newID));
+        }).collect(Collectors.toList());
     }
 
     private boolean isRepeated(String email,String number){
