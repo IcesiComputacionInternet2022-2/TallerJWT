@@ -1,0 +1,1 @@
+insert into "user" (id, email, phone_number, first_name, last_name, password) values ('8432017c-416c-48d1-a262-9085b288a700', 'alexssjr2002@gmail.com', '+573000000000', 'ALEXANDER', 'SANCHEZ', 'PruebaParaEjecutar123#')
