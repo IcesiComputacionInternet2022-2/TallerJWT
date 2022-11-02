@@ -14,7 +14,7 @@ public enum UserErrorCode {
     C106("Last name is empty or exceeds limit size (120 characters)"),
     C107("First name can't contain special characters nor numbers"),
     C108("Last name can't contain special characters nor numbers"),
-    C109("Invalid password. It must include upper case letter, lower case letter, a number and a symbol like #$%@. Please try again"),
+    C109("Invalid password. It must include upper case letter, lower case letter, a number and a symbol like #$%@"),
     S101("Your credentials don't allow to send the request for this user due to sensitive data"),
     E401("Must be authenticated to send this request");
 

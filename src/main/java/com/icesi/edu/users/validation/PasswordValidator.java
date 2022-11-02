@@ -9,7 +9,7 @@ import javax.validation.ConstraintValidatorContext;
 
 import static com.icesi.edu.users.constant.UserErrorCode.C109;
 
-public class PasswordValidator implements ConstraintValidator<CustomAnnotations.NameValidation, String> {
+public class PasswordValidator implements ConstraintValidator<CustomAnnotations.PasswordValidation, String> {
 
     @Override
     public boolean isValid(String password, ConstraintValidatorContext constraintValidatorContext) {
